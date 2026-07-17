@@ -30,4 +30,9 @@ features:
     details: 部分难以归类的内容
     link: /misc/index
     linkText: 跳转
+  - icon: ❓
+    title: 通识
+    details: 都刷机了这些得懂吧？
+    link: /generic_knowledge
+    linkText: 跳转
 ---

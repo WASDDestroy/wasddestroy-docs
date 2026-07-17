@@ -128,6 +128,20 @@ export default defineConfig({
           ]
         }
       ],
+      'generic_knowledge': [
+        {
+          text: "通识",
+          collapsed: false,
+          items: [
+            { text: "提问的智慧", link: "/generic_knowledge/how_to_ask" },
+            { text: "刷机有风险", link: "/generic_knowledge/generic_flashing_warns" },
+            { text: "术语表", link: "/generic_knowledge/glossary" },
+            { text: "命令行入门", link: "/generic_knowledge/basic_command_line_skills" },
+            { text: "刷机工具教程——高通工具箱", link: "/generic_knowledge/qcom_toolbox" },
+            { text: "刷机工具教程——匣", link: "/generic_knowledge/geekflashtool" },
+          ],
+        },
+      ]
     },
 
     editLink: {
