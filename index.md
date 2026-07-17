@@ -11,17 +11,21 @@ hero:
   actions:
     - theme: brand
       text: 全部文档导航
-      link: /navigation
+      link: /
 
 features:
   - icon: 📱
     title: TB710FU Doc
     details: 小新 Pad Pro GT 刷机指南。
     link: /tb710fu-doc/index
-    linkText: 进入子站
+    linkText: 跳转
   - icon: 🔬
     title: 扩展篇
     details: dd 命令、制作 9008 包、修复 GSN、AVB 机制深入讲解。
     link: /tb710fu-doc/dd_command
-    linkText: 深入探索
+    linkText: 跳转
+  - title: 杂项
+    details: 部分难以归类的内容
+    link: /misc/index
+    linkText: 跳转
 ---

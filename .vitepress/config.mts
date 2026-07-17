@@ -120,10 +120,19 @@ export default defineConfig({
           ],
         },
       ],
+      'misc': [
+        {
+          collapsed: false,
+          items: [
+            { text: "说明", link: "/misc/index" },
+            { text: "小米新设备解锁 Bootloader", link: "/misc/mi_unlock_bootloader" },
+          ]
+        }
+      ],
     },
 
     editLink: {
-      pattern: 'https://gitee.com/WASDDestroy/tb710fu-doc/blob/master/:path'
+      pattern: 'https://gitee.com/WASDDestroy/wasddestroy-docs/blob/master/:path'
     },
 
     socialLinks: [
