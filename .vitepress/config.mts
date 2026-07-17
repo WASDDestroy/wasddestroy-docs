@@ -61,11 +61,8 @@ export default defineConfig({
           items: [
             { text: "序言", link: "/tb710fu-doc/before_we_start" },
             { text: "提问的智慧", link: "/tb710fu-doc/how_to_ask" },
-            { text: "风险告知", link: "/tb710fu-doc/generic_flashing_warns" },
             { text: "解锁 Bootloader", link: "/tb710fu-doc/flash_unlocked_device" },
             { text: "锁定 Bootloader", link: "/tb710fu-doc/lock_bootloader" },
-            { text: "刷机工具教程——高通工具箱", link: "/tb710fu-doc/qcom_toolbox" },
-            { text: "刷机工具教程——匣", link: "/tb710fu-doc/geekflashtool" },
             { text: "重要警告 ⭐", link: "/tb710fu-doc/important_warns" },
             { text: "刷机前必做 ⭐", link: "/tb710fu-doc/before_flashing" },
             { text: "Root 方案比较和须知事项", link: "/tb710fu-doc/comparison_and_warn" },
@@ -101,17 +98,13 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: "附录1：常见问题速查", link: "/tb710fu-doc/faq" },
-            { text: "附录2：第三方 ROM 信息汇总", link: "/tb710fu-doc/appendix_3rd_party_roms" },
-            { text: "附录3：术语表", link: "/tb710fu-doc/glossary" },
-            { text: "附录4：资源下载", link: "/tb710fu-doc/resource_download" },
+            { text: "附录2：资源下载", link: "/tb710fu-doc/resource_download" },
           ],
         },
         {
           text: "扩展篇",
           collapsed: true,
           items: [
-            { text: "dd命令", link: "/tb710fu-doc/dd_command" },
-            { text: "制作通用 9008 包", link: "/tb710fu-doc/make_generic_pc_firmware" },
             { text: "修复 GSN", link: "/tb710fu-doc/fix_gsn" },
             { text: "官方 9008 刷机包说明", link: "/tb710fu-doc/notes_on_official_edl_roms" },
           ],
@@ -125,6 +118,7 @@ export default defineConfig({
             { text: "小米新设备解锁 Bootloader", link: "/misc/mi_unlock_bootloader" },
             { text: "AVB 机制入门", link: "/misc/avb_guide" },
             { text: "avbtool.py 简易教程", link: "/misc/avbtool_tutorial" },
+            { text: "dd命令", link: "/misc/dd_command" },
           ]
         }
       ],
