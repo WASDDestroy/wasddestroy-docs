@@ -4,19 +4,24 @@ layout: home
 
 hero:
   name: "WASDDestroy 的个人文档站"
-  text: "“黑砖奇迹”"
-  tagline: fastboot boot sm8750.img
+  tagline: fastboot boot sm8750_ennea.img
+  image:
+    src: /hero.png
+    alt: WASDDestroy
   actions:
     - theme: brand
-      text: 查看导航页
+      text: 全部文档导航
       link: /navigation
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - icon: 📱
+    title: TB710FU Doc
+    details: 小新 Pad Pro GT 刷机指南。
+    link: /tb710fu-doc/index
+    linkText: 进入子站
+  - icon: 🔬
+    title: 扩展篇
+    details: dd 命令、制作 9008 包、修复 GSN、AVB 机制深入讲解。
+    link: /tb710fu-doc/dd_command
+    linkText: 深入探索
 ---
-

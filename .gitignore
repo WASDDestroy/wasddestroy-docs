@@ -1,1 +1,5 @@
 node_modules
+.vitepress/cache/
+.vitepress/cache/deps/
+.vitepress/dist/
+.vitepress/cache/deps/_metadata.json
