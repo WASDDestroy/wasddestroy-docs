@@ -112,9 +112,9 @@ export default defineConfig({
       ],
       'misc': [
         {
+          text: "杂项",
           collapsed: false,
           items: [
-            { text: "说明", link: "/misc/index" },
             { text: "小米新设备解锁 Bootloader", link: "/misc/mi_unlock_bootloader" },
             { text: "AVB 机制入门", link: "/misc/avb_guide" },
             { text: "avbtool.py 简易教程", link: "/misc/avbtool_tutorial" },
