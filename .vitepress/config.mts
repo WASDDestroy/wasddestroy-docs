@@ -51,7 +51,6 @@ export default defineConfig({
           { text: '资源下载', link: '/tb710fu-doc/resource_download' },
         ]
       },
-      { text: '导航页', link: '/navigation' },
     ],
 
     sidebar: {
@@ -114,8 +113,6 @@ export default defineConfig({
             { text: "dd命令", link: "/tb710fu-doc/dd_command" },
             { text: "制作通用 9008 包", link: "/tb710fu-doc/make_generic_pc_firmware" },
             { text: "修复 GSN", link: "/tb710fu-doc/fix_gsn" },
-            { text: "AVB 机制入门", link: "/tb710fu-doc/avb_guide" },
-            { text: "avbtool.py 简易教程", link: "/tb710fu-doc/avbtool_tutorial" },
             { text: "官方 9008 刷机包说明", link: "/tb710fu-doc/notes_on_official_edl_roms" },
           ],
         },
@@ -126,6 +123,8 @@ export default defineConfig({
           items: [
             { text: "说明", link: "/misc/index" },
             { text: "小米新设备解锁 Bootloader", link: "/misc/mi_unlock_bootloader" },
+            { text: "AVB 机制入门", link: "/misc/avb_guide" },
+            { text: "avbtool.py 简易教程", link: "/misc/avbtool_tutorial" },
           ]
         }
       ],
@@ -136,7 +135,6 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/WASDDestroy' },
       { icon: 'gitee', link: 'https://gitee.com/WASDDestroy/tb710fu-doc' },
     ],
 
