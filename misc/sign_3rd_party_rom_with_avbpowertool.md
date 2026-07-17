@@ -21,7 +21,7 @@ AVBOPowerTool 是一个设计用于签名完整 ROM 包的、基于配置的 AVB
 
 boot, dtbo, init_boot, pvmfw, recovery, **super**, vbmeta, vbmeta_system, vendor_boot
 
-![](../media/Sign_ROM_by_Yourself/extract_images.png)
+![](../media/misc/Sign_ROM_by_Yourself/extract_images.png)
 
 将 `super` 单独使用任意解包工具解包，将解包得到的镜像也放置到刚刚放置其他镜像的文件夹，然后删除老 `super` 镜像。
 
@@ -50,7 +50,7 @@ cd AVBPowerTool
 
 如果你从 Releases 下载了 AVBPowerTool ，请使用正规压缩文件管理器将工具解压到一个不包含中文、空格和标点符号的目录中。
 
-![](../media/Sign_ROM_by_Yourself/extract_sign_tool.png)
+![](../media/misc/Sign_ROM_by_Yourself/extract_sign_tool.png)
 
 ## Step 3: 创建或者导入配置
 
