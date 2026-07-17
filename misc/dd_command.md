@@ -63,11 +63,11 @@ output: word_document
 Android 系统的块设备可以在 `/dev/block` 目录（根目录下的 `dev` 文件夹当中的 `block` 文件夹）找到。
 打开之后你会发现全是奇怪的符号：
 
-![](./media/dev_block.webp)
+![](../media/misc/dd_command/dev_block.webp)
 
 事实上，为了简单，可以点进上图中的 `by-name` 目录：
 
-![](./media/dev_block_byname.webp)
+![](../media/misc/dd_command/dev_block_byname.webp)
 
 会发现名字变得熟悉了些。这就是 Android 为了方便提供的“快捷方式”。
 
@@ -84,7 +84,7 @@ Android 系统的块设备可以在 `/dev/block` 目录（根目录下的 `dev` 
 >
 > 也就是这样：
 >
-> ![](./media/dev_block_ls.webp)
+> ![](../media/misc/dd_command/dev_block_ls.webp)
 
 知道了分区名称就可以方便的备份和还原特定的分区了。
 

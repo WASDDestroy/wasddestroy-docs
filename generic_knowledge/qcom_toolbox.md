@@ -20,7 +20,7 @@
 
 ## 主界面
 
-![](./media/generic_knowledge/qcom_toolbox/home_page.webp)
+![](../media/generic_knowledge/qcom_toolbox/home_page.webp)
 
 | 功能                          | 说明                                                                       |
 | --------------------------- | ------------------------------------------------------------------------ |

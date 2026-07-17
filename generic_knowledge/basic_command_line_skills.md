@@ -41,7 +41,7 @@ Windows 会选择一个它认为合适的终端模拟器作为默认终端。要
    > [!tip]
    > 包含 `管理员` 字样的选项，例如 `终端 (管理员)` 用于需要提升权限的操作，比如修改注册表。通常来说不需要使用。
 
-   ![](./media/Command_Line_Basics/super_menu.png)
+   ![](../media/generic_knowledge/Command_Line_Basics/super_menu.png)
 
 2. 终端窗口会在一段时间后弹出，一般来说是底色为黑色或者蓝色的一个窗口，部分时候需要等待终端本身初始化，显示像下面这样的文本信息：
    ``` text
@@ -55,7 +55,7 @@ Windows 会选择一个它认为合适的终端模拟器作为默认终端。要
 这个办法可以启动所有已经在你系统上安装了的终端模拟器。
 
 1. 按下 `Win + R` 打开“运行”
-   ![](./media/Command_Line_Basics/execute.png)
+   ![](../media/generic_knowledge/Command_Line_Basics/execute.png)
 2. 输入要使用的终端名字，命令提示符是 `cmd` ，如果要使用 PowerShell 则输入 `powershell`
 3. 如果输入无误，系统会打开终端窗口，否则将提示找不到文件
 4. 等待终端加载完毕即可使用
@@ -70,7 +70,7 @@ Windows 会选择一个它认为合适的终端模拟器作为默认终端。要
 1. 在 `此电脑` 中导航到希望打开终端的文件夹页面中
 2. 按住键盘上的 `Shift` 键，然后按下鼠标右键
 3. 会打开下图中的上下文菜单，选择`在此处打开 Windows Powershell` 或者包含其他终端名字的选项
-   ![](./media/Command_Line_Basics/context_menu.png)
+   ![](../media/generic_knowledge/Command_Line_Basics/context_menu.png)
 4. 等待终端加载完毕即可使用
 
 ## 使用终端命令
@@ -136,7 +136,7 @@ Windows 会选择一个它认为合适的终端模拟器作为默认终端。要
 
 下面的例子中使用 `cd` 命令切换目录来展示上一级目录和本目录的相对路径语法以及工作目录的变化。
 
-![](./media/Command_Line_Basics/change_dir.png)
+![](../media/generic_knowledge/Command_Line_Basics/change_dir.png)
 
 通常需要在涉及文件的命令和选项中输入 `.\` (Windows) 或者 `./` (Linux 或者 Python 等跨平台应用)，来确保访问当前目录下的文件而不报错。
 

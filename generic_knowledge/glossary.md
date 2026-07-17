@@ -156,7 +156,7 @@ _2026.01：KernelSU 3.0 起官方不再建议使用 GKI 镜像，但是和安全
 
 配图不是实拍，它们基于实拍图制作并添加了中文翻译。
 
-![](./media/image3.webp)
+![](../media/generic_knowledge/glossary/image3.webp)
 
 ## 15. FastbootD
 用于实现对 `super` 分区内容的操作，需要解锁 `BootLoader` 才能刷写。
@@ -165,7 +165,7 @@ _2026.01：KernelSU 3.0 起官方不再建议使用 GKI 镜像，但是和安全
 
 配图不是实拍，它们基于实拍图制作并添加了中文翻译。实际使用时， FastbootD 中被选中的选项会被使用 `蓝底白字` 进行*高亮*。
 
-![](./media/image4.webp)
+![](../media/generic_knowledge/glossary/image4.webp)
 
 ## 16. Recovery
 `Android 系统` 的恢复模式，类似于 `Windows` 系统的 `WinRE` ，或 `Linux` 系统的 `LiveCD` 。它提供了基础的存储访问功能，能够访问和修改设备中除了底层固件分区以外的多数分区，并和电脑通信，读取和发送文件。
@@ -176,13 +176,13 @@ _2026.01：KernelSU 3.0 起官方不再建议使用 GKI 镜像，但是和安全
 
 配图不是实拍，它们基于实拍图制作并添加了中文翻译。实际使用时， AOSP Recovery 中被选中的选项会被使用 `蓝底白字` 进行*高亮*。
 
-![](./media/image5.webp)
+![](../media/generic_knowledge/glossary/image5.webp)
 
 日志内容会出现在 `Recovery 界面的左下角`。
 
 有时候会看到下面的界面，这代表着 `/data` 分区出现了问题，只能格式化（恢复出厂）了。
 
-![](./media/image6.webp)
+![](../media/generic_knowledge/glossary/image6.webp)
 
 ## 17. 第一屏
 指的是含有 Powered by Android 字样和厂商 Logo 的页面，卡在这一步说明 `内核` 等文件有问题。

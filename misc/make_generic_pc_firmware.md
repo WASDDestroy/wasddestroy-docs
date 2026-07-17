@@ -29,7 +29,7 @@
 
 首先得到一个从设备回读的、你知道 `你需要制作通用包的系统所处槽位` 的备份包，就像下面这样：
 
-![](./media/readback_images.webp)
+![](../media/generic_knowledge/make_generic_edl_firmware/readback_images.webp)
 
 如果你不知道槽位，出门右转重新读一份。
 

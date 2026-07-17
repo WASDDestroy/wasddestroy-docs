@@ -23,7 +23,7 @@ output: word_document
 ## 主页
 刷机匣的主页长这样：
 
-![](./media/image8.webp)
+![](../media/generic_knowledge/geekflashtool/image8.webp)
 
 如果第一次使用本软件，先点击箭头 1 所示按键安装驱动，装完驱动记得重启电脑。
 
@@ -51,11 +51,11 @@ output: word_document
 ## 9008 刷机页面
 下面简单介绍 9008 刷机模式的页面：
 
-![](./media/image9.webp)
+![](../media/generic_knowledge/geekflashtool/image9.webp)
 
 ① `选择设备/引导/配置`，下面是点击这个按钮后的展开菜单
 
-![](./media/image10.webp)
+![](../media/generic_knowledge/geekflashtool/image10.webp)
 
 注意红色矩形框出的按键，这是这个页面中我们唯一需要的部分。在这里选定引导文件后，点击右下角的蓝色 `确定` 键。
 
@@ -90,13 +90,13 @@ output: word_document
 
 ⑨ `槽位功能` 按钮，点按后其展开菜单如下：
 
-![](./media/image11.webp)
+![](../media/generic_knowledge/geekflashtool/image11.webp)
 
 这个菜单在刷机完成（包括刷写和解除 Root、刷入第三方 ROM、刷回官方 ROM 等）后必定使用一次，使用的是 **重设当前槽位** 按钮。
 
 ⑩ 工作区：显示分区表的区域，下一页展示了工作区在加载了分区表后的样子。
 
-![](./media/image12.webp)
+![](../media/generic_knowledge/geekflashtool/image12.webp)
 
 使用红色矩形框选的 *表头* 是可以点击的，点击一次后，将按照这一列的信息按序排列分区。
 
