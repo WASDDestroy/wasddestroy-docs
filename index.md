@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "WASDDestroy 的个人文档站"
-  tagline: fastboot boot sm8750_ennea.img
+  tagline: LD_PRELOAD=./preload.so /system/bin/toybox id
   image:
     src: /hero.png
     alt: WASDDestroy
