@@ -40,7 +40,7 @@ const rootSidebar = {
       collapsed: false,
       items: [
         { text: "小米新设备解锁 Bootloader", link: "/misc/mi_unlock_bootloader" },
-        { text: "8750_Ennea.img 初步分析", link: "/misc/qualcomm_unlock_exploit"}
+        { text: "8750_Ennea.img 初步分析", link: "/misc/qualcomm_unlock_exploit"},
         { text: "AVB 机制入门", link: "/misc/avb_guide" },
         { text: "avbtool.py 简易教程", link: "/misc/avbtool_tutorial" },
         { text: "dd命令", link: "/misc/dd_command" },
