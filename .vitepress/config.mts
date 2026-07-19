@@ -2,8 +2,8 @@ import { defineConfig } from 'vitepress'
 import tbConfig from '../tb710fu-doc/.vitepress/config.mjs'
 
 // 为 tb710fu-doc 子模块的 sidebar/nav 链接添加 /tb710fu-doc 前缀
-function prefixLinks(items: any[], prefix: string) {
-  if (!items) return items
+function prefixLinks(items: any[] | any, prefix: string): any[] | any {
+  if (!Array.isArray(items)) return items
   return items.map(item => {
     const newItem = { ...item }
     if (item.link) {
@@ -17,11 +17,16 @@ function prefixLinks(items: any[], prefix: string) {
 }
 
 // 从 tbConfig 中提取 sidebar 并添加前缀
-const tbSidebar = {}
+const tbSidebar: Record<string, any> = {}
 if (tbConfig.themeConfig?.sidebar) {
-  for (const [key, sections] of Object.entries(tbConfig.themeConfig.sidebar)) {
-    const newKey = '/tb710fu-doc' + key
-    tbSidebar[newKey] = prefixLinks(sections, '/tb710fu-doc')
+  if (Array.isArray(tbConfig.themeConfig.sidebar)) {
+    // sidebar 是数组（适用于所有页面），整体挂载到 /tb710fu-doc/ 下
+    tbSidebar['/tb710fu-doc/'] = prefixLinks(tbConfig.themeConfig.sidebar, '/tb710fu-doc')
+  } else {
+    for (const [key, sections] of Object.entries(tbConfig.themeConfig.sidebar)) {
+      const newKey = '/tb710fu-doc' + key
+      tbSidebar[newKey] = prefixLinks(sections, '/tb710fu-doc')
+    }
   }
 }
 
