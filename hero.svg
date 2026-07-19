@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="rgba(0,0,0,0.25)"/>
+    </filter>
+  </defs>
+
+  <!-- Rounded warning triangle -->
+  <path d="M200 180 L270 300 L130 300 Z" 
+        fill="#d32f2f" 
+        stroke="#d32f2f" 
+        stroke-width="28" 
+        stroke-linejoin="round" 
+        filter="url(#shadow)"/>
+
+  <!-- White exclamation mark -->
+  <text x="200" y="280" text-anchor="middle" 
+        fill="white" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="110" 
+        font-weight="bold">!</text>
+
+  <!-- Bold white main text -->
+  <text x="200" y="360" text-anchor="middle" 
+        fill="white" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="20" 
+        font-weight="heavy"
+        letter-spacing="1.5">The system has been destroyed</text>
+
+  <!-- Semi-transparent subtitle -->
+  <text x="200" y="385" text-anchor="middle" 
+        fill="rgba(255,255,255,0.55)" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="16" 
+        font-weight="normal"
+        letter-spacing="0.5">Press power button to shutdown</text>
+</svg>

@@ -7,8 +7,8 @@ hero:
   text: 因为早晚要出事
   tagline: LD_PRELOAD=./preload.so /system/bin/toybox id
   image:
-    src: /hero.png
-    alt: WASDDestroy
+    src: /hero.svg
+    alt: The system has been destroyed
   actions:
     - theme: brand
       text: 全部文档导航
