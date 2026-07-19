@@ -75,7 +75,7 @@ Windows 会选择一个它认为合适的终端模拟器作为默认终端。要
 
 ## 使用终端命令
 
-最常用的命令是 adb 和 fastboot ，需要电脑上提前 [安装 ADB 工具](../tb710fu-doc/flash_unlocked_device.md#安装-adb-工具) 。下面提供一些示例，更多用法请参考命令的 help 信息：
+最常用的命令是 adb 和 fastboot ，需要电脑上提前 [安装 ADB 工具](../tb710fu-doc/generic/flash_unlocked_device.md#安装-adb-工具) 。下面提供一些示例，更多用法请参考命令的 help 信息：
 
 - `adb help` 查看 adb 支持哪些命令，**请善用翻译和 AI 工具理解命令的意思**
 - `adb reboot` 重启设备

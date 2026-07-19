@@ -28,7 +28,7 @@ output: word_document
 > [!danger] 刷机需谨慎
 > 刷机需谨慎，安全不能丢。风险并非源于“刷机”本身，而是来自**背景不明**的系统包、不可信的工具、不规范的流程以及**缺乏安全意识的操作**。广大民众在追求极致的玩机体验时，更应注意保护信息及数据安全。[查看原文 - 人民号](https://www.peopleapp.com/column/30052015045-500007482803)
 
-没有刷机操作是 100% 安全的，但是我们在此仍将“令所进行的操作尽可能稳定”作为目标。如果你认为这个观点是错误的，去本项目仓库[发起 Issue](https://gitee.com/WASDDestroy/tb710fu-doc/issues) ，然后直接跳转到 [Step 1](../tb710fu-doc/flash_unlocked_device.md#step-1-准备必要环境)。
+没有刷机操作是 100% 安全的，但是我们在此仍将“令所进行的操作尽可能稳定”作为目标。如果你认为这个观点是错误的，去本项目仓库[发起 Issue](https://gitee.com/WASDDestroy/tb710fu-doc/issues) ，然后直接跳转到 [Step 1](../tb710fu-doc/generic/flash_unlocked_device.md#step-1-准备必要环境)。
 
 为了达成这个目标，必须先了解刷机风险。
 
@@ -64,7 +64,7 @@ output: word_document
 
 ## Step 1: 准备环境并解锁 Bootloader
 
-这部分内容已经迁移。请转到 [解锁 Bootloader](../tb710fu-doc/flash_unlocked_device) 继续阅读。
+这部分内容已经迁移。请转到 [解锁 Bootloader](../tb710fu-doc/generic/flash_unlocked_device) 继续阅读。
 
 ## Step 2: 刷写 Root
 
