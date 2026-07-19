@@ -83,7 +83,7 @@ export default defineConfig({
   lastUpdated: true,
   title: "WASDDestroy 的个人文档站",
   description: "Explore all my docs there",
-  ignoreDeadLinks: true,
+  ignoreDeadLinks: false,
 
   themeConfig: {
     search: {
