@@ -3,4 +3,5 @@ node_modules
 .vitepress/cache/deps/
 .vitepress/dist/
 .vitepress/cache/deps/_metadata.json
+.vitepress/.vitepress
 package.json
