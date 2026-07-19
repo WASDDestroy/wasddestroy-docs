@@ -137,14 +137,14 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'gitee', link: 'https://gitee.com/WASDDestroy/tb710fu-doc' },
+      { icon: 'gitee', link: 'https://gitee.com/WASDDestroy/wasddestroy-docs' },
     ],
 
     footer: {
       message:
         '<a href="http://beian.miit.gov.cn" target="_blank">浙 ICP 备 2025219672 号 - 1</a>， 由 <a href="https://vitepress.dev" target="_blank">VitePress</a> 强力驱动',
       copyright:
-        "Copyright © 2025 - 至今， 酷安 @WASD_Destroy, 采用 CC BY-SA 4.0 许可。网站首页的动漫人物图片版权归属原作者，本站仅用于学习交流，若有侵权请联系删除。",
+        "Copyright © 2025 - 至今， 酷安 @WASD_Destroy, 采用 CC BY-SA 4.0 许可。",
     },
   },
 })
