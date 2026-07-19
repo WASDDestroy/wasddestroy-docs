@@ -65,6 +65,16 @@ const rootSidebar = {
         { text: "刷机工具教程——匣", link: "/generic_knowledge/geekflashtool" },
       ],
     },
+  ],
+  'lenovo': [
+    {
+      text: "联想通用教程",
+      collapsed: false,
+      items: [
+        { text: "官方刷机工具小妙招", link: "/lenovo/lenovo_quick_fix_tips" },
+        { text: "解锁流程逆向", link: "/lenovo/research_on_sn_img" },
+      ],
+    },
   ]
 }
 
