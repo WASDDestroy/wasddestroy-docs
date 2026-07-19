@@ -1,10 +1,73 @@
 import { defineConfig } from 'vitepress'
+import tbConfig from '../tb710fu-doc/.vitepress/config.mjs'
+
+// 为 tb710fu-doc 子模块的 sidebar/nav 链接添加 /tb710fu-doc 前缀
+function prefixLinks(items: any[], prefix: string) {
+  if (!items) return items
+  return items.map(item => {
+    const newItem = { ...item }
+    if (item.link) {
+      newItem.link = item.link === '/' ? prefix + '/' : prefix + item.link
+    }
+    if (item.items) {
+      newItem.items = prefixLinks(item.items, prefix)
+    }
+    return newItem
+  })
+}
+
+// 从 tbConfig 中提取 sidebar 并添加前缀
+const tbSidebar = {}
+if (tbConfig.themeConfig?.sidebar) {
+  for (const [key, sections] of Object.entries(tbConfig.themeConfig.sidebar)) {
+    const newKey = '/tb710fu-doc' + key
+    tbSidebar[newKey] = prefixLinks(sections, '/tb710fu-doc')
+  }
+}
+
+// 从 tbConfig 中提取 nav，添加前缀（排除 "主页" 项以免重复）
+const tbNav = tbConfig.themeConfig?.nav
+  ?.filter(item => item.link !== '/') // 去掉 tb710fu-doc 的"主页"，由根站点统一
+  ?? []
+const prefixedTbNav = prefixLinks(tbNav, '/tb710fu-doc')
+
+// 合并到根站点的 sidebar
+const rootSidebar = {
+  ...tbSidebar,
+  'misc': [
+    {
+      text: "杂项",
+      collapsed: false,
+      items: [
+        { text: "小米新设备解锁 Bootloader", link: "/misc/mi_unlock_bootloader" },
+        { text: "AVB 机制入门", link: "/misc/avb_guide" },
+        { text: "avbtool.py 简易教程", link: "/misc/avbtool_tutorial" },
+        { text: "dd命令", link: "/misc/dd_command" },
+      ]
+    }
+  ],
+  'generic_knowledge': [
+    {
+      text: "通识",
+      collapsed: false,
+      items: [
+        { text: "提问的智慧", link: "/generic_knowledge/how_to_ask" },
+        { text: "刷机有风险", link: "/generic_knowledge/generic_flashing_warns" },
+        { text: "术语表", link: "/generic_knowledge/glossary" },
+        { text: "命令行入门", link: "/generic_knowledge/basic_command_line_skills" },
+        { text: "刷机工具教程——高通工具箱", link: "/generic_knowledge/qcom_toolbox" },
+        { text: "刷机工具教程——匣", link: "/generic_knowledge/geekflashtool" },
+      ],
+    },
+  ]
+}
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lastUpdated: true,
   title: "WASDDestroy 的个人文档站",
   description: "Explore all my docs there",
+  ignoreDeadLinks: true,
 
   themeConfig: {
     search: {
@@ -42,101 +105,15 @@ export default defineConfig({
     nav: [
       { text: '主页', link: '/' },
       {
-        text: 'TB710FU Doc',
-        items: [
-          { text: '文档首页', link: '/tb710fu-doc/index' },
-          { text: '开始了解', link: '/tb710fu-doc/before_we_start' },
-          { text: 'Root 导航', link: '/tb710fu-doc/state_machine' },
-          { text: '更新日志', link: '/tb710fu-doc/updatelog' },
-          { text: '资源下载', link: '/tb710fu-doc/resource_download' },
-        ]
+         text: 'TB710FU Doc',
+         items: [
+           { text: '文档首页', link: '/tb710fu-doc/' },
+           ...prefixedTbNav,
+         ]
       },
     ],
 
-    sidebar: {
-      '/tb710fu-doc/': [
-        {
-          text: "教程本篇",
-          collapsed: false,
-          items: [
-            { text: "序言", link: "/tb710fu-doc/before_we_start" },
-            { text: "提问的智慧", link: "/tb710fu-doc/how_to_ask" },
-            { text: "解锁 Bootloader", link: "/tb710fu-doc/flash_unlocked_device" },
-            { text: "锁定 Bootloader", link: "/tb710fu-doc/lock_bootloader" },
-            { text: "重要警告 ⭐", link: "/tb710fu-doc/important_warns" },
-            { text: "刷机前必做 ⭐", link: "/tb710fu-doc/before_flashing" },
-            { text: "Root 方案比较和须知事项", link: "/tb710fu-doc/comparison_and_warn" },
-            { text: "Root 教程导航 ⭐", link: "/tb710fu-doc/state_machine" },
-            {
-              text: "Root 相关教程",
-              collapsed: false,
-              items: [
-                { text: "刷写 GKI Root ❌", link: "/tb710fu-doc/flash_gki_root" },
-                { text: "9008 刷写 LKM Root ⭐", link: "/tb710fu-doc/flash_lkm_root_9008" },
-                { text: "TWRP 刷写 LKM Root", link: "/tb710fu-doc/flash_lkm_root_twrp" },
-                { text: "移除 GKI Root", link: "/tb710fu-doc/unroot_gki" },
-                { text: "移除 LKM Root", link: "/tb710fu-doc/unroot_lkm" },
-              ]
-            },
-            { text: "刷入 TWRP", link: "/tb710fu-doc/flash_twrp" },
-            {
-              text: "保留 用户数据 和 Root 权限进行系统增量更新",
-              link: "/tb710fu-doc/update_while_keeping_root",
-            },
-            {
-              text: "刷入第三方 ROM 和自己创建的备份",
-              link: "/tb710fu-doc/flash_3rd_party_rom",
-            },
-            {
-              text: "救砖",
-              link: "/tb710fu-doc/unbrick_device",
-            },
-          ],
-        },
-        {
-          text: "正篇附录",
-          collapsed: false,
-          items: [
-            { text: "附录1：常见问题速查", link: "/tb710fu-doc/faq" },
-            { text: "附录2：资源下载", link: "/tb710fu-doc/resource_download" },
-          ],
-        },
-        {
-          text: "扩展篇",
-          collapsed: true,
-          items: [
-            { text: "修复 GSN", link: "/tb710fu-doc/fix_gsn" },
-            { text: "官方 9008 刷机包说明", link: "/tb710fu-doc/notes_on_official_edl_roms" },
-          ],
-        },
-      ],
-      'misc': [
-        {
-          text: "杂项",
-          collapsed: false,
-          items: [
-            { text: "小米新设备解锁 Bootloader", link: "/misc/mi_unlock_bootloader" },
-            { text: "AVB 机制入门", link: "/misc/avb_guide" },
-            { text: "avbtool.py 简易教程", link: "/misc/avbtool_tutorial" },
-            { text: "dd命令", link: "/misc/dd_command" },
-          ]
-        }
-      ],
-      'generic_knowledge': [
-        {
-          text: "通识",
-          collapsed: false,
-          items: [
-            { text: "提问的智慧", link: "/generic_knowledge/how_to_ask" },
-            { text: "刷机有风险", link: "/generic_knowledge/generic_flashing_warns" },
-            { text: "术语表", link: "/generic_knowledge/glossary" },
-            { text: "命令行入门", link: "/generic_knowledge/basic_command_line_skills" },
-            { text: "刷机工具教程——高通工具箱", link: "/generic_knowledge/qcom_toolbox" },
-            { text: "刷机工具教程——匣", link: "/generic_knowledge/geekflashtool" },
-          ],
-        },
-      ]
-    },
+    sidebar: rootSidebar,
 
     editLink: {
       pattern: 'https://gitee.com/WASDDestroy/wasddestroy-docs/blob/master/:path'
