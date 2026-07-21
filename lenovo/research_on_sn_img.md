@@ -206,3 +206,24 @@ Lenovo 私钥 (服务器端, 不可获取)
 | 解锁能力标志 | `0xA354C` | 设备是否允许解锁 |
 | 证书区 | PHDR[2] | 4 个 X.509 证书 |
 | EFI 协议表 | `0x8AF00` | 条目 40 → QSEE |
+
+## 附：关于修改 Bootloader SN
+
+我们知道 GSN 存储在 `persist` 分区（`devinfo` 分区另有一份拷贝），可以轻易修改，PSN 也是一样。
+
+不难顺着这个思路想到，只要 Bootloader SN 也可以被修改，就可以伪造一台身份和申请解锁的机器完全一致的设备，复用已有的 sn.img ，解锁后还原相关唯一识别号即可。
+
+But:
+
+sub_5A2BC（Fastboot 初始化）中按顺序获取了以下几组数据，一目了然，不言而喻：
+
+数据获取顺序（地址 0x5A8E8 ~ 0x5AA10）
+
+| 步骤 │ 函数 │ 输出缓冲区 │ 注册变量名 │ 数据来源 |
+| - | - | - | - | - |
+| 1    │ sub_D160  │ —              │ —                     │ 探测存储类型 (UFS/eMMC等)       |
+| 2    │ sub_E070  │ —              │ —                     │ 初始化                         |
+| 3    │ sub_F544  │ 0xA361C (64B)  │ serialno              │ ChipInfo/MemCardInfo → UFS CID |
+| 4    │ sub_F240  │ 0xA365C (64B)  │ pserialno             │ misc 分区 (4000B→取前64B)       |
+| 5    │ sub_32B14 │ 0xA3ADD (100B) │ hwboardid 等          │ —                              |
+| 6    │ sub_5B9C8 │ 0xA3A9C        │ Bootloader_SN_Part1/2 │ SHA-256(UFS序列号 + UEFI变量)   |
