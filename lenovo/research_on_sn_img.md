@@ -94,9 +94,9 @@ sub_62760(a1=sn.img, a2=token_buf)
 
   6. 验证结果 → 8 路 switch 分发
        ├── 0     (case 7): ✅ 成功
-       │    检查 dword_A354C (解锁能力标志)
-       │    ├── 非零 → 执行解锁
-       │    └── 零   → "Device dose not allow unlock"
+       |    检查 dword_A354C (解锁能力标志)
+       |    ├── 非零 → 执行解锁
+       |    └── 零   → "Device dose not allow unlock"
        ├── -5    (case 2): ❌ "oem unlock fail, VERIFY"
        ├── -4    (case 3): ❌ "oem unlock fail, PROTOCAL"
        ├── -7    (case 0): ❌ "oem unlock fail, CALC"
@@ -163,12 +163,12 @@ Digest = SHA256(
 
 ```
 Lenovo 私钥 (服务器端, 不可获取)
-  │
+  |
   ├──→ 签发 sn.img (RSA-2048 签名)
-  │      ├── Bootloader_SN (绑定具体设备)
-  │      ├── GSN (绑定具体设备)
-  │      └── Token (一次性, 绑定申请会话)
-  │
+  |      ├── Bootloader_SN (绑定具体设备)
+  |      ├── GSN (绑定具体设备)
+  |      └── Token (一次性, 绑定申请会话)
+  |
   └──→ 验证由 QSEE (TrustZone) 完成
          ├── 公钥固化在 BootROM/证书分区
          ├── 无法从用户空间篡改
@@ -219,11 +219,11 @@ sub_5A2BC（Fastboot 初始化）中按顺序获取了以下几组数据，一�
 
 数据获取顺序（地址 0x5A8E8 ~ 0x5AA10）
 
-| 步骤 │ 函数 │ 输出缓冲区 │ 注册变量名 │ 数据来源 |
+| 步骤 | 函数 | 输出缓冲区 | 注册变量名 | 数据来源 |
 | - | - | - | - | - |
-| 1    │ sub_D160  │ —              │ —                     │ 探测存储类型 (UFS/eMMC等)       |
-| 2    │ sub_E070  │ —              │ —                     │ 初始化                         |
-| 3    │ sub_F544  │ 0xA361C (64B)  │ serialno              │ ChipInfo/MemCardInfo → UFS CID |
-| 4    │ sub_F240  │ 0xA365C (64B)  │ pserialno             │ misc 分区 (4000B→取前64B)       |
-| 5    │ sub_32B14 │ 0xA3ADD (100B) │ hwboardid 等          │ —                              |
-| 6    │ sub_5B9C8 │ 0xA3A9C        │ Bootloader_SN_Part1/2 │ SHA-256(UFS序列号 + UEFI变量)   |
+| 1    | sub_D160  | — | —                     | 探测存储类型 (UFS/eMMC等)       |
+| 2    | sub_E070  | —              | —                     | 初始化                         |
+| 3    | sub_F544  | 0xA361C (64B)  | serialno              | ChipInfo/MemCardInfo → UFS CID |
+| 4    | sub_F240  | 0xA365C (64B)  | pserialno             | misc 分区 (4000B→取前64B)       |
+| 5    | sub_32B14 | 0xA3ADD (100B) | hwboardid 等          | —                              |
+| 6    | sub_5B9C8 | 0xA3A9C        | Bootloader_SN_Part1/2 | SHA-256(UFS序列号 + UEFI变量)   |
