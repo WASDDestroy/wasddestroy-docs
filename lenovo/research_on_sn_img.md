@@ -221,9 +221,9 @@ sub_5A2BC（Fastboot 初始化）中按顺序获取了以下几组数据，一�
 
 | 步骤 | 函数 | 输出缓冲区 | 注册变量名 | 数据来源 |
 | - | - | - | - | - |
-| 1    | sub_D160  | — | —                     | 探测存储类型 (UFS/eMMC等)       |
-| 2    | sub_E070  | —              | —                     | 初始化                         |
+| 1    | sub_D160  | / | /                     | 探测存储类型 (UFS/eMMC等)       |
+| 2    | sub_E070  | /              | /                     | 初始化                         |
 | 3    | sub_F544  | 0xA361C (64B)  | serialno              | ChipInfo/MemCardInfo → UFS CID |
 | 4    | sub_F240  | 0xA365C (64B)  | pserialno             | misc 分区 (4000B→取前64B)       |
-| 5    | sub_32B14 | 0xA3ADD (100B) | hwboardid 等          | —                              |
+| 5    | sub_32B14 | 0xA3ADD (100B) | hwboardid 等          | /                              |
 | 6    | sub_5B9C8 | 0xA3A9C        | Bootloader_SN_Part1/2 | SHA-256(UFS序列号 + UEFI变量)   |
