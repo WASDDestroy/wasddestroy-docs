@@ -299,3 +299,18 @@ Google 提供的前端实现和视觉设计原则，提供简洁的跨平台前�
 
 ## JetPack Compose
 Google 于 2019 年提出的声明式前端实现，利用 Kotlin 实现简洁直观的前端编码体验。
+
+## GSN
+联想设备的全局识别号，8 位的 ASCII 字符串。
+
+## PSN
+联想设备的库存识别号。
+
+## Bootloader SN
+联想设备申请解锁所需的新版识别号，利用 UFS 序列号和其他设备唯一序列号生成，一机一码，不可篡改。
+
+## sn.img
+联想设备的解锁鉴权文件，使用方式为 `fastboot flash unlock <sn.img>`
+
+## 深度测试
+OPPO、一加和真我设备申请解锁 Bootloader 的入口，该应用程序会向设备底层分区下发一个授权码用于解锁 Bootloader 模式。
