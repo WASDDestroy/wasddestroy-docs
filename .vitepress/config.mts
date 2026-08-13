@@ -92,21 +92,21 @@ export default defineConfig({
       'meta',
       {
         name: 'copyright',
-        content: 'CC BY-SA 4.0',
+        content: 'CC BY-NC-SA 4.0',
       },
     ],
     [
       'meta',
       {
         property: 'og:license',
-        content: 'CC BY-SA 4.0',
+        content: 'CC BY-NC-SA 4.0',
       },
     ],
     [
       'link',
       {
         rel: 'license',
-        href: '/legal/CC-BY-SA-4.0.txt',
+        href: '/legal/CC-BY-NC-SA-4.0.txt',
       },
     ],
   ],
@@ -169,7 +169,7 @@ export default defineConfig({
       message:
         '<a href="http://beian.miit.gov.cn" target="_blank">浙 ICP 备 2025219672 号 - 1</a>， 由 <a href="https://vitepress.dev" target="_blank">VitePress</a> 强力驱动',
       copyright:
-        'Copyright © 2025 - 至今， 酷安 @WASD_Destroy， 采用 <a href="/legal/CC-BY-SA-4.0.txt" target="_blank">CC BY-SA 4.0</a> 许可。',
+        'Copyright © 2025 - 至今， 酷安 @WASD_Destroy， 采用 <a href="/legal/CC-BY-NC-SA-4.0.txt" target="_blank">CC BY-NC-SA 4.0</a> 许可。',
     },
   },
 })
