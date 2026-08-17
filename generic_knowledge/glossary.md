@@ -48,11 +48,18 @@ Android 开放源代码项目（Android Open-Source Project） 是一个开放�
 ## USB 调试
 配合 ADB 使用。如同字面意义，支持对你的 Android 设备做高级调试和开发工作。最常见的有下面这些用途：
 1. 安装应用
-2. 投屏
-3. 重启设备
-4. 重启设备到 Bootloader, Recovery, FastbooD 或者深度刷机模式（EDL）
-5. 审计设备日志
-6. 访问设备的类 UNIX 终端（这很正常，Android 是基于 Linux 创建的，而 Linux 又是一个类 UNIX 操作系统）
+2. 转发屏幕画面
+3. 在电脑和 Android 设备之间收发文件
+4. 重启设备
+5. 重启设备到 Bootloader, Recovery, FastbooD 或者深度刷机模式（EDL）
+6. 审计设备日志
+7. 访问设备的类 UNIX 终端（这很正常，Android 是基于 Linux 创建的，而 Linux 又是一个类 UNIX 操作系统）
+8. 模拟触摸屏点击
+9. 不胜枚举
+
+你会发现，1 + 2 + 8 三点组合起来，可以成为投屏利器，也可以被不法分子利用。非必要情况不要开启 USB 调试。
+
+如果你确实需要开启调试，请参考 [开启 USB 调试教程](../tb710fu-doc/generic/flash_unlocked_device.md#打开-usb-调试) 。
 
 ## Fastboot
 - 义项 1: Android SDK 附带的工具，和同名引导加载程序协同工作，可以刷入镜像。
