@@ -213,17 +213,35 @@ Lenovo 私钥 (服务器端, 不可获取)
 
 不难顺着这个思路想到，只要 Bootloader SN 也可以被修改，就可以伪造一台身份和申请解锁的机器完全一致的设备，复用已有的 sn.img ，解锁后还原相关唯一识别号即可。
 
-But:
+但是现在已经确定 Bootloader SN 的来源：UFS Serial 经过 SHA256 摘要后拆分成两个 32 长度的 ASCII 字符串，注册到 Fastboot 变量。验证也很简单：
 
-sub_5A2BC（Fastboot 初始化）中按顺序获取了以下几组数据，一目了然，不言而喻：
+```Python
+import hashlib
 
-数据获取顺序（地址 0x5A8E8 ~ 0x5AA10）
+src = input("UFS SN: ").strip()
+print(hashlib.sha256(src.encode("ascii")).digest().hex())
+```
 
-| 步骤 | 函数 | 输出缓冲区 | 注册变量名 | 数据来源 |
-| - | - | - | - | - |
-| 1    | sub_D160  | / | /                     | 探测存储类型 (UFS/eMMC等)       |
-| 2    | sub_E070  | /              | /                     | 初始化                         |
-| 3    | sub_F544  | 0xA361C (64B)  | serialno              | ChipInfo/MemCardInfo → UFS CID |
-| 4    | sub_F240  | 0xA365C (64B)  | pserialno             | misc 分区 (4000B→取前64B)       |
-| 5    | sub_32B14 | 0xA3ADD (100B) | hwboardid 等          | /                              |
-| 6    | sub_5B9C8 | 0xA3A9C        | Bootloader_SN_Part1/2 | SHA-256(UFS序列号 + UEFI变量)   |
+我的运行结果如下，你可以查阅 [TB710FU 官解教程](/tb710fu-doc/generic/flash_unlocked_device.md) 来确定我的 Bootloader SN：
+
+```text
+UFS SN: 55fdf741
+506d9326b25caf7c7bb6e9844a9f25708999fc067ced8136c71291a8e5cd6695
+```
+
+UFS SN 不可修改，每个 sn.img 绑定一个闪存芯片。
+
+## 附：关于 NO AVB
+
+下面的分析基于 TB710FU 1.1.04.279 的 abl , 它的 NO_AVB 路径还没有被彻底修复。
+
+VB1/NO_AVB 加载器叫 LoadBootImageNoAuth(sub_303E8)，他会直接按分区名读 boot/recovery/init_boot/vendor_boot 头并加载，全程不碰 vbmeta;
+
+sub_2CC6C 把 BootState 置 3(orange)并定位 VB protocol。联想的 osP_version/PSN 反回滚逻辑都只在 VB2 路径里，NO_AVB 下不执行，这部分和 NOAVB 参考实现一致。但 milestone 被联想保留了。
+
+0x2DCC4 的 NO_AVB 处理块调用 sub_3328C(3)(它在 NO_AVB 时因 Is_VERIFIED_BOOT_2 为假直接返回 EFI_NOT_FOUND,什么都不显示)，然后打印 "The dm-verity is not started in restart"(0x2DD08)——之后 所有分支(B.EQ loc_2DBB8、B loc_2DBB8、sub_34C84 → B loc_2DBB8)全部回到 0x2DBB8,打印 "Sending Milestone Call"(0x2DBF0)并调用 sub_1B540(0x2DBFC,写 DevInfo milestone 标志 + 发 SCM 调用)。也就是说 TB710FU 的固件里 LoadImageAndAuth 的每一个出口都会设 milestone,VB2、VB1、NO_AVB 一视同仁。NO AVB 虽然可以开机，但是不能利用 TA 里程碑在 NO AVB 路径下未设置的漏洞。
+
+在新设备上，NO AVB 按照 EDK II 参考实现修复，NO AVB 开机也不再可能。
+
+## 附：关于 GSN
+虽然 sn.img 鉴权过程不涉及 GSN 验证，可以在解锁申请时随意输入 GSN （不建议），但是这么做不能绕过保修检查。根据 2 名用户使用虚构 GSN 提交解锁申请的实验，联想应当在服务器侧维护了一个映射表，能够通过 Bootloader SN 反查对应 GSN 的设备。由此保证用户不能伪造解锁历史骗取保修。
