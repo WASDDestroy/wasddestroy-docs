@@ -1,3 +1,6 @@
 [submodule "tb710fu-doc"]
 	path = tb710fu-doc
 	url = https://gitee.com/WASDDestroy/tb710fu-doc.git
+[submodule "data-structure"]
+	path = data-structure
+	url = https://gitee.com/WASDDestroy/data-structure.git
