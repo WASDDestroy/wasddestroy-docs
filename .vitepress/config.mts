@@ -77,6 +77,16 @@ const rootSidebar = {
         { text: "解锁申请网站前端 JavaScript 分析", link: "/lenovo/unlock_application_page" }
       ],
     },
+  ],
+  'data-structure': [
+    {
+      text: "数据结构（C 语言第三版）",
+      collapsed: false,
+      items: [
+        { text: "数据结构基本知识", link: "/data-structure/basics"},
+        { text: "线性表", link: "/data-structure/linear_list"}
+      ]
+    }
   ]
 }
 
