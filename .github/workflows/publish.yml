@@ -38,10 +38,17 @@ jobs:
         run: cd .vitepress/dist && zip -qr ../dist.zip .
 
       # 只上传单个 zip，避免 FTP 传大量小文件
+      # 超时设置：单次网络操作 60s 无响应即判失败并重试，避免跨境连接静默挂死
       - name: Upload zip via FTP
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq lftp
-          lftp -e "set ftp:ssl-allow no; set net:max-retries 3; put -O /wwwroot/ .vitepress/dist.zip; bye" \
+          lftp -d \
+            -e "set ftp:ssl-allow no; \
+                set ftp:passive-mode on; \
+                set net:timeout 60; \
+                set net:max-retries 3; \
+                set net:reconnect-interval-base 5; \
+                put -O /wwwroot/ .vitepress/dist.zip; bye" \
             -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" \
             "${{ secrets.FTP_SERVER }}"
 
