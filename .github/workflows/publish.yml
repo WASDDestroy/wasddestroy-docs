@@ -58,6 +58,7 @@ jobs:
                 set net:timeout 60; \
                 set net:max-retries 3; \
                 set net:reconnect-interval-base 5; \
+                rm -f /wwwroot/dist.zip; \
                 put -c -O /wwwroot/ .vitepress/dist.zip; bye" \
             -u "$FTP_USERNAME,$FTP_PASSWORD" \
             "$FTP_SERVER" 2>&1 \
