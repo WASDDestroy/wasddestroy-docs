@@ -38,10 +38,20 @@ jobs:
         run: cd .vitepress/dist && zip -qr ../dist.zip .
 
       # 只上传单个 zip，避免 FTP 传大量小文件
-      # 超时设置：单次网络操作 60s 无响应即判失败并重试，避免跨境连接静默挂死
+      # -d 开启调试但输出经过 sed 过滤：把服务器 IP（FTP_SERVER 解析结果）替换为 ***，
+      # GitHub 只会自动遮蔽 secret 的原值（域名），不会遮蔽解析出的 IP
+      # 注意：38MB 产物在国内虚拟主机海外线路上传可能需要 5-15 分钟，日志无刷新属正常
       - name: Upload zip via FTP
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          set -o pipefail
+          ips=$(dig +short "$FTP_SERVER" | grep -E '^[0-9.]+$' | paste -sd '|')
+          # dig 失败时给个无害的兜底值，保证 sed 表达式合法
+          ips=${ips:-255.255.255.255}
           lftp -d \
             -e "set ftp:ssl-allow no; \
                 set ftp:passive-mode on; \
@@ -49,8 +59,9 @@ jobs:
                 set net:max-retries 3; \
                 set net:reconnect-interval-base 5; \
                 put -O /wwwroot/ .vitepress/dist.zip; bye" \
-            -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" \
-            "${{ secrets.FTP_SERVER }}"
+            -u "$FTP_USERNAME,$FTP_PASSWORD" \
+            "$FTP_SERVER" 2>&1 \
+            | sed -E "s/${ips//./\\.}/***/g; s/[0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+/***,***/g"
 
       # 触发服务器上的 deploy.php 解压并清理
       - name: Trigger remote unzip
