@@ -1,0 +1,59 @@
+name: Publish to Website
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive # tb710fu-doc 是子模块，必须拉取
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm docs:build
+
+      # VitePress 只复制 public/，logo 不在其中，手动补齐
+      # 若日后把两个文件挪进 public/（public/hero.svg、public/tb710fu-doc/logo.jpg），可删除本步骤
+      - name: Copy logo assets
+        run: |
+          cp hero.svg .vitepress/dist/hero.svg
+          cp tb710fu-doc/logo.jpg .vitepress/dist/tb710fu-doc/logo.jpg
+
+      - name: Add .htaccess
+        run: printf 'ErrorDocument 404 /404.html\n' > .vitepress/dist/.htaccess
+
+      - name: Package
+        run: cd .vitepress/dist && zip -qr ../dist.zip .
+
+      # 只上传单个 zip，避免 FTP 传大量小文件
+      - name: Upload zip via FTP
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          lftp -e "set ftp:ssl-allow no; set net:max-retries 3; put -O /wwwroot/ .vitepress/dist.zip; bye" \
+            -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" \
+            "${{ secrets.FTP_SERVER }}"
+
+      # 触发服务器上的 deploy.php 解压并清理
+      - name: Trigger remote unzip
+        run: |
+          for i in 1 2 3; do
+            if curl -fsS -X POST -d "token=${{ secrets.DEPLOY_TOKEN }}" "https://${{ secrets.DEPLOY_URL }}/deploy.php"; then
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
