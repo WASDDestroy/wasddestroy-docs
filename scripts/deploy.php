@@ -10,6 +10,8 @@
  *     即使本文件源码泄露也不泄露 token
  *   - 只接受 POST，token 不进 URL，避开访问日志与 Referer
  *   - 无任何参数化路径/上传功能，最坏后果仅为解压服务器上已有的 dist.zip
+ *
+ * 运行环境：主机 PHP 已固定为 8.2，可使用现代语法
  */
 
 // 拒绝 GET 等其它方法，减小被扫描器探测的面
@@ -28,21 +30,7 @@ if ($expected === false) {
 }
 $expected = trim($expected);
 
-// 兼容 PHP 5.x：?? 是 PHP 7 语法，hash_equals 是 5.6 才有的函数
-if (!function_exists('hash_equals')) {
-    function hash_equals($known, $user) {
-        if (!is_string($known) || !is_string($user) || strlen($known) !== strlen($user)) {
-            return false;
-        }
-        $diff = 0;
-        for ($i = 0; $i < strlen($known); $i++) {
-            $diff |= ord($known[$i]) ^ ord($user[$i]);
-        }
-        return $diff === 0;
-    }
-}
-
-$posted = isset($_POST['token']) ? $_POST['token'] : '';
+$posted = $_POST['token'] ?? '';
 if ($posted === '' || !hash_equals($expected, $posted)) {
     http_response_code(403);
     exit('forbidden');
