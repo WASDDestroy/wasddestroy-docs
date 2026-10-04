@@ -58,7 +58,7 @@ jobs:
                 set net:timeout 60; \
                 set net:max-retries 3; \
                 set net:reconnect-interval-base 5; \
-                put -O /wwwroot/ .vitepress/dist.zip; bye" \
+                put -c -O /wwwroot/ .vitepress/dist.zip; bye" \
             -u "$FTP_USERNAME,$FTP_PASSWORD" \
             "$FTP_SERVER" 2>&1 \
             | sed -E "s/${ips//./\\.}/***/g; s/[0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+,[0-9]+/***,***/g"

@@ -28,7 +28,21 @@ if ($expected === false) {
 }
 $expected = trim($expected);
 
-$posted = $_POST['token'] ?? '';
+// 兼容 PHP 5.x：?? 是 PHP 7 语法，hash_equals 是 5.6 才有的函数
+if (!function_exists('hash_equals')) {
+    function hash_equals($known, $user) {
+        if (!is_string($known) || !is_string($user) || strlen($known) !== strlen($user)) {
+            return false;
+        }
+        $diff = 0;
+        for ($i = 0; $i < strlen($known); $i++) {
+            $diff |= ord($known[$i]) ^ ord($user[$i]);
+        }
+        return $diff === 0;
+    }
+}
+
+$posted = isset($_POST['token']) ? $_POST['token'] : '';
 if ($posted === '' || !hash_equals($expected, $posted)) {
     http_response_code(403);
     exit('forbidden');
