@@ -93,6 +93,16 @@ const rootSidebar = {
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lastUpdated: true,
+  // Nolebase 插件的客户端产物含 .vue 文件，SSR 构建时需要打包进来而不是 external
+  vite: {
+    ssr: {
+      noExternal: [
+        '@nolebase/ui',
+        '@nolebase/vitepress-plugin-enhanced-readabilities',
+        '@nolebase/vitepress-plugin-highlight-targeted-heading',
+      ],
+    },
+  },
   title: "WASDDestroy 的个人文档站",
   description: "Explore all my docs there",
   ignoreDeadLinks: false,

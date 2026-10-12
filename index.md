@@ -27,10 +27,6 @@ features:
     details: “i 想 TV”
     link: /lenovo/index
     linkText: 跳转
-  - title: 数据结构
-    details: 数据结构第三版（C 语言实现）的课堂笔记
-    link: /data-structure/index
-    linkText: 跳转
   - title: 杂项
     details: 部分难以归类的内容
     link: /misc/index

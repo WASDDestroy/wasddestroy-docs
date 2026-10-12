@@ -1,0 +1,65 @@
+/* VitePress 2.0 默认主题在带侧边栏的页面把导航栏标题钳在侧边栏列宽度内，
+ * 加上站点 Logo 后长标题会被省略号截断。限宽有两层，必须同时放宽：
+ * 1. VPNavBar.vue: .VPNavBar.has-sidebar .title（外层标题列，真正的瓶颈）
+ *    max-width: calc(var(--vp-sidebar-width) - 2rem)
+ * 2. VPNavBarTitle.vue: .VPNavBarTitle.has-sidebar（内层组件根节点，scoped 规则）
+ *    max-width: calc(var(--vp-sidebar-width) - 4rem)
+ * 只放宽内层没有任何效果——外层列会继续把盒子钳在 240px。 */
+@media (min-width: 60rem) {
+  .VPNavBar.has-sidebar .title,
+  .VPNavBarTitle.has-sidebar {
+    /* !important 用于压过默认主题的 scoped 规则
+     * .VPNavBar.has-sidebar .title[data-v-…]（多一个属性选择器，特异性更高） */
+    max-width: calc(var(--vp-sidebar-width) + 5rem) !important;
+  }
+}
+
+/* 用户字体切换：选择"霞鹜文楷屏幕版"后覆盖全站正文与代码字体 */
+html.use-lxgw-font,
+html.use-lxgw-font body {
+  font-family: 'LXGW WenKai Screen', var(--vp-font-family-base);
+}
+
+html.use-lxgw-font .vp-doc,
+html.use-lxgw-font .vp-doc div > span,
+html.use-lxgw-font .sidebar,
+html.use-lxgw-font .VPNavBar .title span,
+html.use-lxgw-font .VPNavBarMenuLink {
+  font-family: 'LXGW WenKai Screen', var(--vp-font-family-base);
+}
+
+/* Nolebase 阅读增强的"全宽"等布局模式会在 ≥1280px 给导航栏内容区
+ * 加上 padding-left: max(32px, var(--vp-sidebar-width))（272px），
+ * 把搜索框推去与文档内容列对齐，导致标题和搜索之间出现大片空白。
+ * 这里压回 32px，让搜索框紧跟标题列。
+ * 选择器用 body[class*=…] 是为了在特异性上压过插件的
+ * body.VPNolebaseEnhancedReadabilitiesLayoutSwitchXxx .VPNavBar…（多一级类选择器）。 */
+@media (min-width: 1280px) {
+  body[class*='VPNolebaseEnhancedReadabilitiesLayoutSwitch'] .VPNavBar.has-sidebar > .wrapper > .container > .content {
+    padding-left: 32px !important;
+  }
+}
+
+/* 插件全宽模式把侧边栏移回最左、内容列推到侧边栏右侧，但导航栏背景面
+ * （.VPNavBar::before，不透明）的起点仍按"居中 1440px 布局"的公式计算：
+ * --vp-nav-col-offset = (100% - 90rem) / 2 + 侧边栏宽度，在 1920 屏上为 506px。
+ * 于是 272px～506px 之间是一条没有背景的镂空带，滚动时正文会从标题右侧、
+ * 搜索框下方面板透出来。
+ * 三种布局模式（全宽 / 侧边栏宽度可调 / 全部宽度可调）都有此问题。
+ * 可调模式下侧边栏右缘 = max(32px, (100% - (页面最大宽度 - 64px)) / 2)
+ *   + 侧边栏宽度 - 32px，col-offset 按同一公式对齐（含拖动滑块的情况）；
+ * 100% 在导航栏内解析比固定定位的侧边栏窄约一个滚动条宽度，
+ * 让背景面略微压过侧边栏边缘，避免反向露出细缝。 */
+@media (min-width: 90rem) {
+  body[class*='VPNolebaseEnhancedReadabilitiesLayoutSwitch'] .VPNavBar.has-sidebar {
+    --vp-nav-col-offset: calc(
+      max(32px, (100% - var(--vp-nolebase-enhanced-readabilities-page-max-width, 100%) + 64px) / 2)
+      + var(--vp-sidebar-width) - 32px
+    );
+  }
+
+  /* 全宽模式使用独立的 full-width-max-width 变量，且默认值下侧边栏就在最左 */
+  body.VPNolebaseEnhancedReadabilitiesLayoutSwitchFullWidth .VPNavBar.has-sidebar {
+    --vp-nav-col-offset: var(--vp-sidebar-width);
+  }
+}
