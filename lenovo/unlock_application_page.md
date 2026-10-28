@@ -8,7 +8,7 @@
 
 解锁页面使用 **Lenovo Passport SSO**（单点登录）系统：
 
-```
+```text
 1. 用户访问 www.zui.com/iunlock
 2. 页面检测 SCK 和 USERNAME cookie
    ├── 存在 → 显示已登录状态 (body.is-login)
@@ -123,7 +123,7 @@ $.ajax({
 ## 为什么前端攻击无法绕过登录
 
 | 设想的方法 | 实际障碍 |
-|-----------|---------|
+| ----------- | --------- |
 | 修改 JS 跳过登录检测 | `SCK` cookie 由 `passport.lenovo.com` SSO 签发，前端无法伪造 |
 | 直接 POST 到 `/unlock/add` | 服务端验证 `token`（SCK）的有效性，无效则拒绝 |
 | 伪造 `uid` cookie | `uid` 由服务端根据当前登录会话生成，没有登录就没有有效 `uid` |
@@ -140,7 +140,7 @@ $.ajax({
 ## API 端点一览
 
 | 端点 | 方法 | 作用 |
-|------|------|------|
+| - | - | - |
 | `GET /unlock` | 获取 `uid`（基于当前登录会话） |
 | `GET /unlock/getcode` | 获取图形验证码（需 `uid`） |
 | `POST /unlock/add` | 提交解锁申请（需 `token` + `uid`） |

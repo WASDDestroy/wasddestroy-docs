@@ -68,19 +68,19 @@ output: word_document
 我们主要使用命令 `add_hash_footer` `add_hashtree_footer` `erase_footer` `info_image` 和 `make_vbmeta_image`
 
 1. info_image
-   
+
    `用法： ./avbtool.py info_image --image <your_image>`
-   
+
    打印给定镜像的 AVB 信息。如果镜像没有 VBMeta 元数据结构将给出提示。
 2. erase_footer
-   
+
    `用法： ./avbtool.py erase_footer --image <your_image>`
-   
+
    擦除给定镜像的 VBMeta 元数据结构。
 3. add_hash_footer
-   
+
    添加 Hash 描述符到指定镜像，看看下面的例子：
-   
+
    ```shell
    ./avbtool.py add_hash_footer --image boot.img\
    --partition_name boot\
@@ -91,10 +91,11 @@ output: word_document
    --rollback_index <重要，填写正确的回滚指数，严禁填写 9999999999 等无意义数值，这个数值会被存储在防篡改存储中，不要随意尝试！>\
    --prop <属性的名称>:<属性的值> # 可以有很多条
    ```
+
 4. add_hashtree_footer （依赖 FEC ，仅限 Linux 可以创建被 AVB 信任的镜像）
-   
+
    添加 Hashtree 描述符，看看下面的例子：
-   
+
    ```shell
    ./avbtool.py add_hashtree_footer --image system.img\
    --hash_algorithm SHA256\
@@ -103,10 +104,11 @@ output: word_document
    --prop <属性的名称>:<属性的值> # 可以有很多条
    # --do_not_generate_fec 对于 Windows 平台临时测试很有用
    ```
+
 5. make_vbmeta_image
-   
+
    生成单独的 vbmeta 镜像，看看下面的例子：
-   
+
    ```shell
    ./avbtool.py make_vbmeta_image --output ./my_vbmeta.img\
    --algorithm SHA256_RSA4096\

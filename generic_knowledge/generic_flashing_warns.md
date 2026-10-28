@@ -54,7 +54,7 @@ output: word_document
    - 平板的手写笔和键盘在第三方 ROM 下失效
    - NFC 功能由于安全验证问题不可用
    - 由于设备验证问题而不能使用厂商提供的强大定制相机
-   
+
    > [!important]
    > 设备制造商不对安装的第三方固件的安全、性能等指标做任何保障，且原则上不为这些设备提供保修。如刷写第三方固件，不要向官方渠道反馈你遇到的 Bug 。
 
@@ -71,12 +71,12 @@ output: word_document
    拥有 Root 权限相当于拥有了 Windows 的管理员账户，可以进行大多数关于系统底层的修改了。
 
    如果您**完全没有了解过刷机**，可以考虑直接了解更现代的 `KernelSU`。如果您使用过 `SuperSU` ，可以尝试操作逻辑更接近的 `Magisk` ：
-      
-   | \    | Magisk                                    | KernelSU                                              | KernelSU Next                                             | SukiSU Ultra                                              | APatch                   |
-   |------|-------------------------------------------|-------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|--------------------------|
-   | 优势 | - 兼容性好<br>- 内置 Zygisk<br>- 授权直观 | -  `元模块`<br>- 稳定安全<br>- 隐匿性好<br>- 精细授权 | -  `元模块`<br>- 隐匿性好<br>- 个性化管理器<br>- 精细授权 | -  `元模块`<br>- 隐匿性好<br>- 个性化管理器<br>- 精细授权 | - 极致隐藏<br>- 内核模块 |
-   | 劣势 | - 易被检测                                | - 授权不直观                                          | - 授权不直观                                              | - bug 较多<br>- 授权不直观<br>                            | - 易被误伤               |
-   
+
+   | \ | Magisk | KernelSU | KernelSU Next | SukiSU Ultra | APatch |
+   | - | - | - | - | - | - |
+   | 优势 | 兼容性好、内置 Zygisk、授权直观 | `元模块`、稳定安全、隐匿性好、精细授权 | `元模块`、隐匿性好、个性化管理器、精细授权 | `元模块`、隐匿性好、个性化管理器、精细授权 | 极致隐藏、内核模块 |
+   | 劣势 | 易被检测 | 授权不直观 | 授权不直观 | bug 较多、授权不直观 | 易被误伤 |
+
    *注：[kernelsu.org 对元模块的说明](https://kernelsu.org/zh_CN/guide/metamodule.html)*
 
 > [!danger]
@@ -87,19 +87,21 @@ output: word_document
    - 5.10 **及**以上内核版本的设备：`Magisk`, `KernelSU` 和 `APatch` 任君选择。
    > [!tip]
    > 关于确定内核版本，请参考 [KernelSU - 安装](https://kernelsu.org/zh_CN/guide/installation.html) 。
-2.  得到 `init_boot` 或 `boot` 镜像 ，通过下载系统包实现。
+2. 得到 `init_boot` 或 `boot` 镜像 ，通过下载系统包实现。
 
    那么问题来了：如何确定应该使用 `init_boot` 还是 `boot` ?
-   
+
    答：
-   - APatch: `boot`
-   - Magisk / KernelSU LKM 模式: 
-     - 出厂 Android 版本小于等于 `Android 12` ，或者内核版本前两位小于等于 `5.10`: `boot`；
-     - 出厂为 `Android 13` 及以上，或者内核版本前两位大于等于 `5.15`: `init_boot`。
+
+- APatch: `boot`
+- Magisk / KernelSU LKM 模式:
+  - 出厂 Android 版本小于等于 `Android 12` ，或者内核版本前两位小于等于 `5.10`: `boot`；
+  - 出厂为 `Android 13` 及以上，或者内核版本前两位大于等于 `5.15`: `init_boot`。
 
    下载系统包：
-   - https://rom.oppo.help/ （小米、OPPO、vivo）
-   - https://xiaomirom.com/ （小米）
+
+- <https://rom.oppo.help/> （小米、OPPO、vivo）
+- <https://xiaomirom.com/> （小米）
 
    卡刷和线刷：卡刷包可用于直接更新系统，线刷包用于电脑刷机。这里只提取我们需要的镜像，因此下载哪个都可以。
 
@@ -108,11 +110,11 @@ output: word_document
    > [!tip] 进阶玩法
    > 还可以通过深度刷机模式和带有 Root 的 DSU 系统更新包获取需要的镜像。还有一个叫做 `Payload Dumper Compose` 的软件，它可以直接通过 `全量 OTA 链接` 读取我们需要的某个镜像，实现按需下载，节省流量和存储空间。
 
-3.  选择 Root 实现并安装：
+1. 选择 Root 实现并安装：
 
-   - 方法 1: Magisk / Alpha / Kitsune Mask: [Magisk 中文网](https://magiskcn.com/)
-   - 方法 2: KernelSU / KernelSU Next / SukiSU Ultra: [官方文档](https://kernelsu.org/zh_CN/guide/installation.html) 或者 [KernelSU 中文网](https://kernelsu.com/)
-   - 方法 3: APatch: [APatch 中文网](https://apatch.app/)
+- 方法 1: Magisk / Alpha / Kitsune Mask: [Magisk 中文网](https://magiskcn.com/)
+- 方法 2: KernelSU / KernelSU Next / SukiSU Ultra: [官方文档](https://kernelsu.org/zh_CN/guide/installation.html) 或者 [KernelSU 中文网](https://kernelsu.com/)
+- 方法 3: APatch: [APatch 中文网](https://apatch.app/)
     > [!note] 需要更换新的 KPM 模块？
     > 这个步骤将重新修补 `boot` 并刷入。如果你的设备是免解锁刷入的 APatch，应当将这个镜像重新签名然后再刷入。
     >
@@ -141,6 +143,8 @@ output: word_document
 > 1. 细节被隐藏，不利后续维护：用户无法在出现问题后精确定位“更改哪个文件导致问题发生”，只能知道“刷了这个模块后问题出现了”。
 > 2. 模块间作用顺序不明确：可能出现“模块打架”（多个模块修改同一个文件，造成文件相关的行为不确定）
 > 3. 用户门槛降低，破坏用户设备变得更容易：用户只需要下载并刷入模块，潜在的消去了“下载并知道我所更改的每一个文件”的步骤，导致恶意代码容易藏身于模块中。且模块痕迹基本不残留在更改的文件中，导致作恶后难以追踪“幕后凶手”。[案例 - zygisk.apk 事件](https://www.coolapk.com/feed/67763977?s=MDEzNGI4OWYxMWM1ODUzZzY5Nzc2M2Rhega1590)
+
+---
 
 > [!tip] 为了克服这些坏处，我们应该怎么做？
 >
@@ -174,13 +178,13 @@ output: word_document
    - 如果为正在运行的 APP 授予 Root 权限，可能需要重启应用才能生效。
 
    - KernelSU 及其分支还允许通过 APP Profile 精细控制应用的权限等级，详情参考[KernelSU - APP Profile](https://kernelsu.org/zh_CN/guide/app-profile.html)。
-   
+
    > [!tip] 找不到需要授权的应用？
    > 重启 Root 管理器一般可以解决问题。
 
 ## Step 5: 出问题了怎么办？
 
-0. **保命技**：强制重启， `电源键 + 音量下键` （仅在小新 Pad Pro GT 上测试过）
+1. **保命技**：强制重启， `电源键 + 音量下键` （仅在小新 Pad Pro GT 上测试过）
 
 > [!tip]
 > 事实上，如果你不确定强制重启的快捷键，可以直接按住 `电源键 + 音量上键 + 音量下键` 不放，直到屏幕熄灭后立即松手。

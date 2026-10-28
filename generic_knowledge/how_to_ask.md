@@ -7,7 +7,7 @@ output: word_document
 > [!note] 另请参阅
 > 一个更好更详细的叙述：[你缺失的那门计算机课 - 遇到问题怎么办](https://www.criwits.top/missing/how-to-find-solutions.html#%E6%8F%90%E9%97%AE%E7%9A%84%E8%89%BA%E6%9C%AF)
 
-## 提问三要素/精简版：
+## 提问三要素/精简版
 
 哲学三问是“我是谁？”“我从哪里来？”“我要到哪里去？”，这样的思想其实也适用于提问：
 

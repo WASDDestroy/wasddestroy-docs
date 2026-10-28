@@ -6,10 +6,11 @@ output: word_document
 
 > [!important]
 > 另请参阅 [官方教程](https://docs.qq.com/doc/DTWxqZ2JvdUNjU29o) 。
-
+>
 > 这是我们目前使用的主流工具，UI/UX 更加友好，且为解除谷歌锁等功能提供了一键式入口。
 
 ## 文件列表
+
 解压缩后得到以下文件：
 
 | 名称              | 说明                             |
@@ -21,25 +22,30 @@ output: word_document
 | 使用指南.txt      | 指向存放在知乎的教程（已被删除） |
 
 ## 主页
+
 刷机匣的主页长这样：
 
-![](../media/generic_knowledge/geekflashtool/image8.webp)
+![主页](../media/generic_knowledge/geekflashtool/image8.webp)
 
 如果第一次使用本软件，先点击箭头 1 所示按键安装驱动，装完驱动记得重启电脑。
 
 > [!note]
 > Q: 能不能不重启电脑？
-> 
+>
 > A: 本教程涉及的场景可以不重启。
+
+---
 
 > [!note]
 > Q: 能不能从其他地方安装驱动？
-> 
+>
 > A: 可以，使用来自 `Windows Update` 的驱动就行。
+
+---
 
 > [!warning]
 > 对于使用 来自 `匣` 和 来自 `Windows Update` 以外来源驱动程序的用户，我们有权拒绝回答问题。
-> 
+>
 > —— “没有日志，没有报错，我能做的就是帮你烧一炷香。”
 
 驱动安装完毕后点击箭头 2 所示按键，就能进入 9008 刷机页面。
@@ -49,19 +55,20 @@ output: word_document
 如果你希望使用 USB3 ，用的是 USB3 接口和 USB3 电缆但发现存在问题，可以试试箭头 1 指向的按键右侧的 `修复 USB 连接问题`。
 
 ## 9008 刷机页面
+
 下面简单介绍 9008 刷机模式的页面：
 
-![](../media/generic_knowledge/geekflashtool/image9.webp)
+![9008 刷机页面](../media/generic_knowledge/geekflashtool/image9.webp)
 
 ① `选择设备/引导/配置`，下面是点击这个按钮后的展开菜单
 
-![](../media/generic_knowledge/geekflashtool/image10.webp)
+![选择设备、引导、配置](../media/generic_knowledge/geekflashtool/image10.webp)
 
 注意红色矩形框出的按键，这是这个页面中我们唯一需要的部分。在这里选定引导文件后，点击右下角的蓝色 `确定` 键。
 
-② `使用 XML` 选项和右侧的 `选择 XML ` `选择镜像目录` 按钮
+② `使用 XML` 选项和右侧的 `选择 XML` `选择镜像目录` 按钮
 
-用来刷入`备份的全分区镜像`、刷入`第三方 ROM`、或者刷入`救砖包`，选择 `使用 XML` 后点击 `选择 XML `加载正确的 `rawprogram.xml` 和 `patch.xml` ，软件就会自动读取应当刷入哪些分区，并查找到合适的文件。
+用来刷入`备份的全分区镜像`、刷入`第三方 ROM`、或者刷入`救砖包`，选择 `使用 XML` 后点击 `选择 XML`加载正确的 `rawprogram.xml` 和 `patch.xml` ，软件就会自动读取应当刷入哪些分区，并查找到合适的文件。
 
 如果将 `镜像文件` 和 `XML` 放在不同的目录，在加载 `XML` 后使用 `选择镜像目录` 按钮手动指定一个镜像目录，软件会依据 `XML` 文件从指定的目录中查找适当的镜像。
 
@@ -90,13 +97,13 @@ output: word_document
 
 ⑨ `槽位功能` 按钮，点按后其展开菜单如下：
 
-![](../media/generic_knowledge/geekflashtool/image11.webp)
+![槽位功能展开菜单](../media/generic_knowledge/geekflashtool/image11.webp)
 
 这个菜单在刷机完成（包括刷写和解除 Root、刷入第三方 ROM、刷回官方 ROM 等）后必定使用一次，使用的是 **重设当前槽位** 按钮。
 
 ⑩ 工作区：显示分区表的区域，下一页展示了工作区在加载了分区表后的样子。
 
-![](../media/generic_knowledge/geekflashtool/image12.webp)
+![显示分区表的工作区](../media/generic_knowledge/geekflashtool/image12.webp)
 
 使用红色矩形框选的 *表头* 是可以点击的，点击一次后，将按照这一列的信息按序排列分区。
 

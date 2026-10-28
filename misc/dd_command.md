@@ -14,6 +14,8 @@ output: word_document
 >
 > A: 在 Linux 中，磁盘也算是一个文件（万物皆为文件），因此也可以被 `dd` 读写。
 
+---
+
 > [!note]
 > Q: Android 要怎么使用这个命令？
 >
@@ -49,11 +51,13 @@ output: word_document
 
 2. 命令输出：
    指示读写的块数量。比如：
+
    ```text
     0+1 records in
     0+1 records out
     13 Bytes（13 B）copied，12.1558 s，0.0 KB/s 
    ```
+
    数字 0+1 的含义参考这里：[Stack Exchange](https://unix.stackexchange.com/questions/238482/what-does-the-two-numbers-mean-respectively-in-dds-ab-records-stats?noredirect=1&lq=1)，网页加载时间可能会比较久。
 
    如果两个数字都是 0 ，说明没有数据被读写，你的读写操作被拒绝了。
@@ -63,19 +67,19 @@ output: word_document
 Android 系统的块设备可以在 `/dev/block` 目录（根目录下的 `dev` 文件夹当中的 `block` 文件夹）找到。
 打开之后你会发现全是奇怪的符号：
 
-![](../media/misc/dd_command/dev_block.webp)
+![/dev/block 目录](../media/misc/dd_command/dev_block.webp)
 
 事实上，为了简单，可以点进上图中的 `by-name` 目录：
 
-![](../media/misc/dd_command/dev_block_byname.webp)
+![/dev/block/by-name 目录](../media/misc/dd_command/dev_block_byname.webp)
 
 会发现名字变得熟悉了些。这就是 Android 为了方便提供的“快捷方式”。
 
 > [!warning]
 > 有些时候 `by-name` 目录提供的友好名称可能不准确。
-> 
+>
 > 输入下面的命令查看它们实际上映射的分区，方便进一步操作：
-> 
+>
 > ```bash
 > su
 > cd /dev/block/by-name
@@ -84,7 +88,7 @@ Android 系统的块设备可以在 `/dev/block` 目录（根目录下的 `dev` 
 >
 > 也就是这样：
 >
-> ![](../media/misc/dd_command/dev_block_ls.webp)
+> ![列举 /dev/block/by-name 目录](../media/misc/dd_command/dev_block_ls.webp)
 
 知道了分区名称就可以方便的备份和还原特定的分区了。
 
@@ -116,7 +120,7 @@ su
 dd if=/dev/block/by-name/boot_b of=/sdcard/boot_backup.img
 ```
 
-2. 刷写 Recovery 分区，假定**内置存储空间根目录**有个叫做 `twrp.img` 的镜像。
+1. 刷写 Recovery 分区，假定**内置存储空间根目录**有个叫做 `twrp.img` 的镜像。
 
 A槽：
 
@@ -132,7 +136,7 @@ su
 dd if=/sdcard/twrp.img of=/dev/block/by-name/recovery_a
 ```
 
-3. 鉴别格机脚本
+1. 鉴别格机脚本
 
 观察到某段脚本存在下面的代码：
 
@@ -152,6 +156,8 @@ dd if=/dev/urandom of=/dev/sda
 > `sda` 是全盘，因此第一条示例命令使用数据0填充全盘内容。第二条示例命令使用随机值填充全盘内容。
 >
 > 碰到这样的代码时请多加小心。
+
+---
 
 > [!note]
 > 也有人将来自 `zero` 和 `urandom` 的数据用于测速。

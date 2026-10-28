@@ -5,10 +5,14 @@
 > [!danger]
 > 通用刷机包不能替代全分区回读！
 
+---
+
 > [!warning]
 > 自制的救砖包可能包含存在问题的镜像，例如被 Root实现 修改过的 `boot` 分区镜像。
 >
 > 制作前确定你的备份不包含这些问题镜像。
+
+---
 
 > [!danger]
 > 通用包中不应当包括以下内容：
@@ -29,7 +33,7 @@
 
 首先得到一个从设备回读的、你知道 `你需要制作通用包的系统所处槽位` 的备份包，就像下面这样：
 
-![](../media/generic_knowledge/make_generic_edl_firmware/readback_images.webp)
+![备份包](../media/generic_knowledge/make_generic_edl_firmware/readback_images.webp)
 
 如果你不知道槽位，出门右转重新读一份。
 
@@ -42,7 +46,7 @@
 > [!note]
 > 如果你开启了 "隐藏已知文件类型的扩展名" ，那么看到的后缀就是 `_a` 或者 `_b` 。
 
-2. 重命名剩余镜像
+1. 重命名剩余镜像
 
 将**所有文件名格式为 "PartitionName_Slot.img" 的镜像**重命名为 "PartitionName.img"。
 
@@ -53,6 +57,7 @@
 从官方刷机包提取 `patch.xml` 放到备份镜像所在的文件夹。
 
 自己修改回读的 XML ，具体来讲它应当指导刷入以下镜像：
+
 - abl
 - aop
 - aop_config
@@ -122,8 +127,8 @@
 > - xbl_sc_logs
 > - xbl_sc_test_mode
 
-2. 放入引导文件 `xbl_s_devprg_ns.melf` 。
+1. 放入引导文件 `xbl_s_devprg_ns.melf` 。
 
-3. （可选）放入刷机工具。
+2. （可选）放入刷机工具。
 
-4. 打包。
+3. 打包。

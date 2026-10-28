@@ -9,6 +9,8 @@ output: word_document
 >
 > 如果有任何错漏，欢迎您的指出和 PR。
 
+---
+
 > [!note]
 > 如果对 AVB 功能和 vbmeta 的具体实现有兴趣，请访问 [Google Source](https://android.googlesource.com/platform/external/avb/+/main/README.md) 获取官方说明文档。
 
@@ -99,6 +101,7 @@ Android 启动时验证是为 Android 设备提供启动时保护的功能，在
 就用小新 Pad Pro GT 为例子：
 
 > [!note] TB710FU 简明启动验证顺序
+>
 > 1. vbmeta
 > 2. 发现 vbmeta 包含其他分区的信息
 > 3. 检查其中包含的分区的完整性：boot, recovery, vbmeta_system, dtbo, init_boot, vendor_boot, odm, system_dlkm, vendor, vendor_dlkm
@@ -119,25 +122,25 @@ Android 启动时验证是为 Android 设备提供启动时保护的功能，在
    - 哈希树： odm, system_dlkm, vendor, vendor_dlkm
 
 4. 分别用类似方法验证上面的分区是否同样可信：跳转到对应分区，获取对应分区的 vbmeta 元数据，先和 vbmeta 中记载的信息做对照，以 boot 和 vbmeta_system 为例：
-   
+
    | vbmeta 中记载的      | boot 分区中包含的    |
    |----------------------|----------------------|
    | 分区名字 boot        | 分区名字 boot        |
    | 公钥摘要 2597...f011 | 公钥摘要 2597...f011 |
-    
+
     发现信息完全吻合，镜像可信。
 
     对于 vbmeta_system 分区，我们发现这也是一个 vbmeta 分区，其中包含了下面分区的信息：
-       
+
     - 哈希： pvmfw
     - 哈希树： product, system, system_ext
 
     那么除了验证 vbmeta_system 分区本身可信之外，还要进一步验证其中包含的四个分区的可信性。
 5. 重复此过程（检查签名、检查回滚指数、检查信息和 vbmeta 中的记载是否匹配）直到所有分区都被验证，如果均无问题则 AVB 流程结束，核准启动高阶操作系统。
 6. 如果上述步骤中任何一步出现问题，验证流程即刻终止，BootLoader 向用户提示出错信息，同时停止启动流程：
-   
+
    “原版 BootLoader” 会显示下面的信息：
-   
+
    > Your device is corrupted. It can not be trusted and will not boot.
 
    小米 / OPlus 有各自自定义的校验失败画面。
@@ -145,7 +148,7 @@ Android 启动时验证是为 Android 设备提供启动时保护的功能，在
 ## 总结分析
 
 1. 如果分区信息包含在 vbmeta 类别的镜像中且为 Hash 或者 Hashtree 分区，那么修改这个分区就要同步生成新的 vbmeta 镜像：
-    
+
     ∵ 修改分区
 
     ∴ 分区摘要变化
@@ -161,7 +164,7 @@ Android 启动时验证是为 Android 设备提供启动时保护的功能，在
     这就解释了 LKM 模式需要同时签名修改的分区并重新生成对应 vbmeta 的原因。
 
 2. 如果分区信息包含在 vbmeta 类分区中，但是是链式分区，那么更改镜像后不需要重新生成 vbmeta 镜像，但是需要重新对本镜像使用 vbmeta 中记录的公钥进行签名：
-    
+
     ∵ 镜像被修改
 
     ∴ 镜像摘要值变化
@@ -177,15 +180,15 @@ Android 启动时验证是为 Android 设备提供启动时保护的功能，在
     ∴ 必须为本分区重新签名，并使用之前的密钥
 
 3. 某个分区刻意没有包含在 vbmeta 中
-   
+
    默认 AVB 行为不会验证它。但由于 ROM 中定义的其他启动验证和 `dm-verity` 的存在，启动过程仍旧会失败。例如为 TB710FU 移植 HyperOS 时，必须为 mi_ext 分区添加 Hashtree 页脚并将这个分区的描述符信息包含在 vbmeta_system 中。
 
 4. 为什么 ROMer 总要关闭 AVB 验证？
-   
+
    ROMer 可以为自己制作的 ROM 重新使用新的密钥对进行签名，但是此密钥对用于签名的公钥和设备内烧录的私钥不符，因此就算签名了镜像，设备也不会承认这是有效镜像，拒绝启动。因此，不得不关闭 AVB 验证以保证系统能够启动。除非厂商有意或无意暴露了签名用的公钥，这样就可以使用厂商公钥签名并正常启动操作系统。
 
 5. 解锁 BootLoader 和 AVB 验证状态的关联
-   
+
    锁定的 BootLoader 会强制启用 AVB，解锁状态下则不会。因此在回锁 BootLoader 时要非常注意，不要尝试在刷写了第三方镜像或者修改镜像的设备上锁定它。
 
    在 Android 系统中查询 AVB 状态会有三种情况：
@@ -202,15 +205,15 @@ Android 启动时验证是为 Android 设备提供启动时保护的功能，在
    > Your device will boot in 5 seconds.
 
 6. 用户自定义密钥
-   
+
    在 Pixel 2 和 Pixel 2 XL 及更新的 Pixel 设备上支持烧录用户自定义密钥对。使用自定义公钥签名的系统镜像可以在烧录自定义私钥的设备上正常启动。此时 AVB 状态为 Yellow ，表明正在使用自定义密钥对保护设备，启动时，屏幕上会提示关于 Yellow State 的提示。
 
 7. 厂商应对措施
-   
+
    通过更新构建系统的密钥对，并在系统更新中包含加载新的私钥的 `abl` + 使用新的公钥签名的镜像组合，可以有效封堵漏洞。为了防止攻击者通过降级 `abl` 重新利用漏洞，可以进一步更新前向启动链(xbl)。
 
 8. 一点练习，某台紫光芯片的设备
-   
+
    - Footers in vbmeta -> Type "Chain": boot, dtbo, socko, odmko, **vbmeta_system**, **vbmeta_system_ext**, **vbmeta_vendor**, **vbmeta_product**, *nr_modem*, *nr_phy*, l_agdsp, pm_sys
    - Footers in vbmeta_system -> Type "Hashtree": system
    - Footers in vbmeta_system_ext -> Type "Hashtree": system_ext
@@ -226,5 +229,5 @@ Android 启动时验证是为 Android 设备提供启动时保护的功能，在
    由于使用链式分区进行保护，生成 `vbmeta` 时使用的命令的旗标为 `--chain_partition partition_name:rollback_index_location:public_key_binary`。因此无法在缺失一个或多个密钥的情况下劫持启动链，是安全性较高但是较为复杂的方式。
 
 9. ./magiskboot sign
-    
+
     这条命令为目标镜像添加 AVB1.0 页脚。根据参数，它似乎没法为镜像添加 AVB 2.0 的数据段。

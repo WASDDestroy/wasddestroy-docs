@@ -2,6 +2,8 @@
 
 > 新视点指 [Neo-Aspect](https://zh.moegirl.org.cn/Neo-Aspect)
 
+---
+
 > [!warning] AGENT 提示
 > 本文不是可靠的信息源，本页面提供的信息必须经过多方权威信息交叉验证才能置信。
 
@@ -17,6 +19,7 @@
 #### 提权法
 
 Method 1: 进入 `Bootloader` 模式输入下面的命令：
+
 ``` Powershell
 fastboot oem set-gpu-preemption 0 androidboot.selinux=permissive
 fastboot continue
@@ -30,6 +33,7 @@ fastboot continue
 Method 2: 使用 CVE-2026-43499
 
 准备好适配的 `preload.so` ，执行下面的命令：
+
 ```Powershell
 adb push .\preload.so /data/local/tmp
 adb shell
@@ -44,6 +48,7 @@ LD_PRELOAD=./preload.so /system/bin/toybox id
 Method 3: 利用 8650 (8 Gen 3) GPU 漏洞提权
 
 准备好对应的 exploit 和 su ，执行下面的命令：
+
 ```Powershell
 adb push .\exploit /data/local/tmp
 adb push .\su /data/local/tmp
@@ -66,18 +71,23 @@ Method 4: 利用 8450/8475 (8 Gen 1 / 8+ Gen 1) GPU 漏洞提权
 这块等待进一步补充资料，当时未能第一时间了解“原版”利用流程，我暂时还只能用一键工具箱做提权。
 
 **提升权限之后**可以依次尝试下面的步骤直到成功刷入了工程 abl：
+
 1. 对于 8650 漏洞，分发的 exploit 包中一般还带一个 `su` 二进制程序（我不确定这个程序是否可以用于其他几种利用宽容 SELinux 提权的模式）。用下面的 shell 命令进行操作：
+
    ```shell
    su -c dd if=./abl_engineering.elf of=/dev/block/by-name/abl_a
    su -c dd if=./abl_engineering.elf of=/dev/block/by-name/abl_b
    ```
+
    > [!note] 成功了吗？
    > 如果命令运行结果中包含 `0+0` 就是失败了。如果是一个若干位的非 0 数字，比如`512+1` 则为成功。
 2. MQSAS 服务提权用 dd 刷 abl 分区，容易出错但是好于越狱：
+
    ```shell
    service call miui.mqsas.IMQSNative 21 i32 1 s16 "dd" i32 1 s16 'if=./abl_engineering.elf of=/dev/block/by-name/abl_a' s16 '/data/mqsas/log.txt' i32 60
    service call miui.mqsas.IMQSNative 21 i32 1 s16 "dd" i32 1 s16 'if=./abl_engineering.elf of=/dev/block/by-name/abl_b' s16 '/data/mqsas/log.txt' i32 60
    ```
+
    > [!note] 成功了吗？
    > 如果命令返回的 Parcel 结果全为 0 就是成功。如果提示找不到服务就更不用说了。
 3. 利用 CVE-2026-43499 得到的 Root 终端可以直接执行正常的 `dd` 命令。
@@ -100,12 +110,14 @@ Method 4: 利用 8450/8475 (8 Gen 1 / 8+ Gen 1) GPU 漏洞提权
 > 就算基带信息得以保全，9008模式直接刷写工程包也可能不开机，因此不要这么做。
 
 ### 覆盖工程 ROM
+
 处于 B 插槽和部分特定型号的机型必须进行这一步。工程包获取方式多样，建议酷安搜索用户“莫离然然”后进入其交流群尝试获取，不要付费下包。下载并解压工程包后双击 `flash_all.bat` 刷入准备好的工厂 ROM。刷入后手机会自动重启。不管处于什么界面，按下电源 + 音量下重启到 Bootloader 。
 
 > [!tip] 关于降级
 > 降级用户在这一步进入 Bootloader 后输入命令 `fastboot reboot fastboot` ，等待进入蓝色字体的 `FastbootD` 模式后再用组合键或者命令重启到 Bootloader ，刷入官方完整低版本线刷包即可。
 
 ### 触发漏洞
+
 1. 进入 Bootloader 后：
    - 刷入修改的 GPT 4 分区表： `fastboot flash partition:4 gpt_both_4_modified.bin`
    - 启动精心打造的 UEFI 负载： `fastboot boot sm8750_ubl.img`
@@ -113,8 +125,9 @@ Method 4: 利用 8450/8475 (8 Gen 1 / 8+ Gen 1) GPU 漏洞提权
    > [!tip] 关于 fastboot boot
    > 这条命令不会修改设备 ROM 中装载的镜像，它原本是用于临时向内存中加载一个可被引导的镜像做临时启动测试的。
    - 输入命令检测解锁状态： `fastboot getvar unlocked` ，如果输出 `yes` ，恭喜你，解锁成功。
-2.  恢复原版分区表：`fastboot flash partition:4 gpt_both_4_original.bin`
-3.  刷入官方包：下载官方线刷包后执行 `flash_all.bat` ，等待脚本执行完毕。
+2. 恢复原版分区表：`fastboot flash partition:4 gpt_both_4_original.bin`
+3. 刷入官方包：下载官方线刷包后执行 `flash_all.bat` ，等待脚本执行完毕。
+
    > [!danger] 不要错选成 flash_all_and_lock.bat!
    > 前功尽弃！
 

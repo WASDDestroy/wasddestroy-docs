@@ -27,7 +27,7 @@ output: word_document
 从联想 TB710FU (小新 Pad Pro GT) 最新版系统固件中提取的 ABL 镜像：
 
 | 项目 | 说明 |
-|------|------|
+| - | - |
 | **固件版本** | 最新正式版系统 |
 | **架构** | AArch64 (ARM64) PE32+ |
 | **函数数量** | 1998 个 |
@@ -37,7 +37,7 @@ output: word_document
 
 ### 第一步：刷入 sn.img
 
-```
+```batch
 fastboot flash unlock sn.img
 ```
 
@@ -50,7 +50,7 @@ fastboot flash unlock sn.img
 
 ### 第二步：执行解锁
 
-```
+```batch
 fastboot oem unlock-go
 ```
 
@@ -60,14 +60,14 @@ fastboot oem unlock-go
 
 #### 参数传递
 
-```
+```c
 X0 = unk_A3B41          ← sn.img 数据指针 (356 字节)
 X1 = unk_A3A9C          ← 64 字节 token 缓冲区
 ```
 
 #### 验证步骤
 
-```
+```text
 sub_62760(a1=sn.img, a2=token_buf)
 
   1. 初始化 SHA256 上下文
@@ -105,7 +105,7 @@ sub_62760(a1=sn.img, a2=token_buf)
 
 ## sn.img 文件格式
 
-```
+```text
 偏移 0x00 - 0x63 (100 字节):  元数据头部
   包含:
   · Bootloader_SN (64 字符 ASCII hex)
@@ -122,7 +122,7 @@ sub_62760(a1=sn.img, a2=token_buf)
 ABL 的证书存储区包含 **4 个 Lenovo X.509 证书**：
 
 | 证书层级 | 主题关键信息 |
-|---------|-------------|
+| --------- | ------------- |
 | **Root CA** | `LENOVO Root CA1`, Beijing, SecTools1 |
 | **Attestation CA** | `LENOVO Attestation CA1`, California, San Diego |
 | **Keys** | `LENOVO Keys1`, Beijing, SecTools1 |
@@ -132,7 +132,7 @@ ABL 的证书存储区包含 **4 个 Lenovo X.509 证书**：
 
 ## 摘要算法推测
 
-```
+```c
 Digest = SHA256(
     "1a2blenovo3c4d5e"  ||    // 固定密钥 (16 字节)
     Token_64bytes        ||    // 申请时下发的 64 字节 token
@@ -151,7 +151,7 @@ Digest = SHA256(
 新版 ABL 的鉴权机制**不再给这种篡改留余地**：
 
 | 绕过方式 | 阻断层 | 原因 |
-|---------|--------|------|
+| --------- | -------- | ------ |
 | 修改 sn.img 中的 Bootloader_SN | ❌ **签名校验** | sn.img 含有 RSA 签名，任何字节篡改都会导致签名验证失败 |
 | 直接替换 sn.img 中的签名 | ❌ **私钥缺失** | 签名需要 Lenovo 私钥，不可获取 |
 | 修改 ABL 绕过验证 | ❌ **Boot 校验** | ABL 所在的 FV (Firmware Volume) 被 AES 加密 |
@@ -161,7 +161,7 @@ Digest = SHA256(
 
 新版鉴权体系是**端到端签名链验证**：
 
-```
+```text
 Lenovo 私钥 (服务器端, 不可获取)
   |
   ├──→ 签发 sn.img (RSA-2048 签名)
@@ -195,7 +195,7 @@ Lenovo 私钥 (服务器端, 不可获取)
 ## 附：abl 关键地址参考
 
 | 组件 | 地址 | 说明 |
-|------|------|------|
+| ------ | ------ | ------ |
 | 命令表 | `0x8A738` | 30 条 fastboot 命令 |
 | `flash:` handler | `0x5BEE4` | 处理 flash 命令 |
 | `"oem unlock"` handler | `0x5F04C` | unlock 入口 |
@@ -244,4 +244,5 @@ sub_2CC6C 把 BootState 置 3(orange)并定位 VB protocol。联想的 osP_versi
 在新设备上，NO AVB 按照 EDK II 参考实现修复，NO AVB 开机也不再可能。
 
 ## 附：关于 GSN
+
 虽然 sn.img 鉴权过程不涉及 GSN 验证，可以在解锁申请时随意输入 GSN （不建议），但是这么做不能绕过保修检查。根据 2 名用户使用虚构 GSN 提交解锁申请的实验，联想应当在服务器侧维护了一个映射表，能够通过 Bootloader SN 反查对应 GSN 的设备。由此保证用户不能伪造解锁历史骗取保修。
