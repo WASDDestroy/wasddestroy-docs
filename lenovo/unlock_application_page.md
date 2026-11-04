@@ -139,8 +139,8 @@ $.ajax({
 
 ## API 端点一览
 
-| 端点 | 方法 | 作用 |
-| - | - | - |
+| 端点和方法 | 作用 |
+| - | - |
 | `GET /unlock` | 获取 `uid`（基于当前登录会话） |
 | `GET /unlock/getcode` | 获取图形验证码（需 `uid`） |
 | `POST /unlock/add` | 提交解锁申请（需 `token` + `uid`） |
