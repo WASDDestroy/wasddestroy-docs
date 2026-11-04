@@ -3,12 +3,16 @@
   "devDependencies": {
     "@nolebase/vitepress-plugin-enhanced-readabilities": "^2.18.2",
     "@nolebase/vitepress-plugin-highlight-targeted-heading": "^2.18.2",
+    "markdownlint-cli2": "^0.23.3",
     "vitepress": "^2.0.0-alpha.20"
   },
   "scripts": {
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",
-    "docs:preview": "vitepress preview"
+    "docs:preview": "vitepress preview",
+    "lint:md": "markdownlint-cli2",
+    "lint:md:fix": "markdownlint-cli2 --fix",
+    "resize:md-images": "python scripts/resize-md-images.py"
   },
   "dependencies": {
     "@nolebase/ui": "^2.18.2",

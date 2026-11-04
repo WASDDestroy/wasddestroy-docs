@@ -1,0 +1,29 @@
+// markdownlint-cli2 配置
+//
+// VS Code 扩展 davidanson.vscode-markdownlint 会自动发现本文件（它内部就是用
+// markdownlint-cli2 引擎跑 lint），所以命令行 `pnpm lint:md` 与编辑器 Problems
+// 面板使用同一份规则，不会出现“编辑器说没事、CI 说有问题”的偏差。
+// 官方说明：https://github.com/DavidAnson/markdownlint-cli2#configuration
+{
+  // 与扩展设置 markdownlint.lintWorkspaceGlobs 的默认值保持一致，
+  // 额外排除 VitePress 的构建产物与缓存。
+  "globs": [
+    "**/*.{md,mkd,mdwn,mdown,markdown,markdn,mdtxt,mdtext,workbook}",
+    "!**/*.code-search",
+    "!**/bower_components",
+    "!**/node_modules",
+    "!**/.git",
+    "!**/vendor",
+    "!**/.vitepress/cache/**",
+    "!**/.vitepress/dist/**"
+  ],
+  // 规则保持 markdownlint 默认值，等同于扩展在 markdownlint.config 未配置时的行为。
+  // 要放宽或收紧规则就写在这里，编辑器与命令行会同步生效。
+  "config": {
+    // 例：中文文档行普遍很长，如需关掉行长限制，取消下一行注释：
+    "MD013": false,
+    "MD033": {
+      "allowed_elements": ["a", "span"]
+    }
+  }
+}
