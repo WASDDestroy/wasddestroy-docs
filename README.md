@@ -9,6 +9,16 @@
   - **聚焦标记**：通过目录或锚点链接跳转时，目标标题会被短暂高亮，方便定位。
 - 相关代码位于 `.vitepress/theme/index.ts`（挂载插件组件）与 `.vitepress/config.mts` 中的 `vite.ssr.noExternal` 配置（SSR 构建需要）。
 
+## 目录（侧边栏）如何生成
+
+`docs:dev` 与 `docs:build` 会先运行 `scripts/gen-sidebar.mjs`，扫描各子目录下的 Markdown 层级并生成 `.vitepress/sidebar.generated.mjs`。侧栏文字默认取文档的 H1，扫描推不出来的信息全部集中在 `.vitepress/sidebar.map.mjs`：
+
+- `sections`：顶层分区（侧栏键、条目顺序、折叠状态、排除项）。分组方式与目录层级不一致时用 `tree` 显式复刻（`tb710fu-doc` 的 `generic/` 就被拆成了三组）。
+- `dirs`：子目录的中文名，例如 `data-structure/linear_list` → `线性表`；可附带 `order`（数组顺序即侧栏顺序）与 `collapsed`。
+- `titles`：稀疏的短名映射，只覆盖长 H1，例如 `misc/dd_command` → `dd 命令`；键是相对仓库根、去掉 `.md` 的路径。
+
+新增文档后不需手改侧栏：未被 `order` 列出的文件会按文件名追加到末尾并打印提示；`tb710fu-doc` 这类 `tree` 分区里未收录的文档会以 warning 形式列出。`pnpm gen:sidebar:check` 会在生成结果与提交的文件不一致或存在 warning 时失败。
+
 ## 预览、编辑和部署
 
 要使用 vitepress 预览网页，遵循下面的步骤：

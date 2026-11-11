@@ -1,94 +1,11 @@
 import { defineConfig } from 'vitepress'
-import tbConfig from '../tb710fu-doc/.vitepress/config.mjs'
+import type { DefaultTheme } from 'vitepress'
+import generatedSidebar from './sidebar.generated.mjs'
 
-// 为 tb710fu-doc 子模块的 sidebar/nav 链接添加 /tb710fu-doc 前缀
-function prefixLinks(items: any[] | any, prefix: string): any[] | any {
-  if (!Array.isArray(items)) return items
-  return items.map(item => {
-    const newItem = { ...item }
-    if (item.link) {
-      newItem.link = item.link === '/' ? prefix + '/' : prefix + item.link
-    }
-    if (item.items) {
-      newItem.items = prefixLinks(item.items, prefix)
-    }
-    return newItem
-  })
-}
-
-// 从 tbConfig 中提取 sidebar 并添加前缀
-const tbSidebar: Record<string, any> = {}
-if (tbConfig.themeConfig?.sidebar) {
-  if (Array.isArray(tbConfig.themeConfig.sidebar)) {
-    // sidebar 是数组（适用于所有页面），整体挂载到 /tb710fu-doc/ 下
-    tbSidebar['/tb710fu-doc/'] = prefixLinks(tbConfig.themeConfig.sidebar, '/tb710fu-doc')
-  } else {
-    for (const [key, sections] of Object.entries(tbConfig.themeConfig.sidebar)) {
-      const newKey = '/tb710fu-doc' + key
-      tbSidebar[newKey] = prefixLinks(sections, '/tb710fu-doc')
-    }
-  }
-}
-
-// 从 tbConfig 中提取 nav，添加前缀（排除 "主页" 项以免重复）
-const tbNav = tbConfig.themeConfig?.nav
-  ?.filter(item => item.link !== '/') // 去掉 tb710fu-doc 的"主页"，由根站点统一
-  ?? []
-const prefixedTbNav = prefixLinks(tbNav, '/tb710fu-doc')
-
-// 合并到根站点的 sidebar
-const rootSidebar = {
-  ...tbSidebar,
-  'misc': [
-    {
-      text: "杂项",
-      collapsed: false,
-      items: [
-        { text: "小米新设备解锁 Bootloader", link: "/misc/mi_unlock_bootloader" },
-        { text: "8750_Ennea.img 初步分析", link: "/misc/qualcomm_unlock_exploit"},
-        { text: "AVB 机制入门", link: "/misc/avb_guide" },
-        { text: "avbtool.py 简易教程", link: "/misc/avbtool_tutorial" },
-        { text: "dd命令", link: "/misc/dd_command" },
-      ]
-    }
-  ],
-  'generic_knowledge': [
-    {
-      text: "通识",
-      collapsed: false,
-      items: [
-        { text: "提问的智慧", link: "/generic_knowledge/how_to_ask" },
-        { text: "刷机有风险", link: "/generic_knowledge/generic_flashing_warns" },
-        { text: "Root 教程导航", link: "/generic_knowledge/root_guide" },
-        { text: "术语表", link: "/generic_knowledge/glossary" },
-        { text: "命令行入门", link: "/generic_knowledge/basic_command_line_skills" },
-        { text: "刷机工具教程——高通工具箱", link: "/generic_knowledge/qcom_toolbox" },
-        { text: "刷机工具教程——匣", link: "/generic_knowledge/geekflashtool" },
-      ],
-    },
-  ],
-  'lenovo': [
-    {
-      text: "联想通用教程",
-      collapsed: false,
-      items: [
-        { text: "官方刷机工具小妙招", link: "/lenovo/lenovo_quick_fix_tips" },
-        { text: "解锁流程逆向", link: "/lenovo/research_on_sn_img" },
-        { text: "解锁申请网站前端 JavaScript 分析", link: "/lenovo/unlock_application_page" }
-      ],
-    },
-  ],
-  'data-structure': [
-    {
-      text: "数据结构（C 语言第三版）",
-      collapsed: false,
-      items: [
-        { text: "数据结构基本知识", link: "/data-structure/basics"},
-        { text: "线性表", link: "/data-structure/linear_list"}
-      ]
-    }
-  ]
-}
+// 侧栏由 scripts/gen-sidebar.mjs 扫描各子目录的层级生成，
+// 英文目录名与长标题的映射维护在 .vitepress/sidebar.map.mjs。
+// 修改映射或新增文档后运行 `pnpm gen:sidebar`（docs:dev / docs:build 会自动执行）。
+const rootSidebar = generatedSidebar as DefaultTheme.Sidebar
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -163,15 +80,18 @@ export default defineConfig({
       },
     },
 
-    // https://vitepress.dev/reference/default-theme-config
+    // 顶栏只有 tb710fu-doc 有下拉子项；侧栏请改 .vitepress/sidebar.map.mjs
     nav: [
       { text: '主页', link: '/' },
       {
-         text: 'TB710FU Doc',
-         items: [
-           { text: '文档首页', link: '/tb710fu-doc/' },
-           ...prefixedTbNav,
-         ]
+        text: 'TB710FU Doc',
+        items: [
+          { text: '文档首页', link: '/tb710fu-doc/' },
+          { text: '通用教程', link: '/tb710fu-doc/generic/before_we_start' },
+          { text: '更新日志', link: '/tb710fu-doc/generic/updatelog' },
+          { text: '资源下载', link: '/tb710fu-doc/generic/resource_download' },
+          { text: '问题反馈与技术交流', link: '/tb710fu-doc/generic/feedback' },
+        ],
       },
     ],
 

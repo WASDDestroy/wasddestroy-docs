@@ -7,8 +7,10 @@
     "vitepress": "^2.0.0-alpha.20"
   },
   "scripts": {
-    "docs:dev": "vitepress dev",
-    "docs:build": "vitepress build",
+    "gen:sidebar": "node scripts/gen-sidebar.mjs",
+    "gen:sidebar:check": "node scripts/gen-sidebar.mjs --check --strict",
+    "docs:dev": "node scripts/gen-sidebar.mjs && vitepress dev",
+    "docs:build": "node scripts/gen-sidebar.mjs && vitepress build",
     "docs:preview": "vitepress preview",
     "lint:md": "markdownlint-cli2",
     "lint:md:fix": "markdownlint-cli2 --fix",
