@@ -174,6 +174,10 @@ export default {
               "link": "/data-structure/tree/threaded_binary_tree"
             },
             {
+              "text": "树和森林",
+              "link": "/data-structure/tree/tree_and_forest"
+            },
+            {
               "text": "哈夫曼编码",
               "link": "/data-structure/tree/huffman_encoding"
             }

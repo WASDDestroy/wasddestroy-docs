@@ -155,6 +155,7 @@ export default {
         'implement_a_binary_tree',
         'traverse_a_binary_tree',
         'threaded_binary_tree',
+        'tree_and_forest',
         'huffman_encoding',
       ],
     },
