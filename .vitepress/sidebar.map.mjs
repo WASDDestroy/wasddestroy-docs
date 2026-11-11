@@ -154,7 +154,7 @@ export default {
         'definition_and_features',
         'implement_a_binary_tree',
         'traverse_a_binary_tree',
-        'clue_binary_tree',
+        'threaded_binary_tree',
         'huffman_encoding',
       ],
     },

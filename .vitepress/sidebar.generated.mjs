@@ -171,7 +171,7 @@ export default {
             },
             {
               "text": "线索二叉树",
-              "link": "/data-structure/tree/clue_binary_tree"
+              "link": "/data-structure/tree/threaded_binary_tree"
             },
             {
               "text": "哈夫曼编码",
