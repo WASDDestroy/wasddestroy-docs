@@ -9,6 +9,18 @@
   - **聚焦标记**：通过目录或锚点链接跳转时，目标标题会被短暂高亮，方便定位。
 - 相关代码位于 `.vitepress/theme/index.ts`（挂载插件组件）与 `.vitepress/config.mts` 中的 `vite.ssr.noExternal` 配置（SSR 构建需要）。
 
+## 图片统一使用 WebP
+
+截图在提交时自动转成 WebP：pre-commit hook 扫描暂存的 Markdown 图片，编码为 `.webp`、改写 `![...]()` / `<img src>` 引用并删除原图；只有体积确实变小才替换。图片大多位于 `tb710fu-doc`、`data-structure` 两个子模块，`pnpm install` 会在父仓库和已初始化的子模块里各装一份 hook（父仓库使用版本化的 `.githooks/`，子模块 hook 是本机配置）。
+
+- `pnpm hooks:install`：手动重装 hook（换机器后执行一次）。
+- `pnpm images:webp:check`：预览会转换哪些图片、预计能省多少空间。
+- `pnpm images:webp`：手动批量转换（CI 构建前也会执行一次兜底）。
+- `SKIP_WEBP_HOOK=1 git commit ...`：临时跳过 hook。
+- 依赖：Python 3 + Pillow（`python -m pip install pillow`）。
+
+被 YAML frontmatter 的 `image:` / `cover:` 引用的封面图，以及 gif、svg、已经是 webp 的图片不会处理。目录名 `tmp/`、`node_modules/`、`.vitepress/dist/` 会被跳过。
+
 ## 目录（侧边栏）如何生成
 
 `docs:dev` 与 `docs:build` 会先运行 `scripts/gen-sidebar.mjs`，扫描各子目录下的 Markdown 层级并生成 `.vitepress/sidebar.generated.mjs`。侧栏文字默认取文档的 H1，扫描推不出来的信息全部集中在 `.vitepress/sidebar.map.mjs`：

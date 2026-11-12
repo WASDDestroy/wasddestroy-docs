@@ -1,0 +1,23 @@
+#!/bin/sh
+# 提交前把暂存的 PNG/JPEG 图片转成 WebP：改写 Markdown 引用并删除原图。
+# 实现在 scripts/convert_images_to_webp.py；本文件由 pnpm hooks:install 启用
+# （git config core.hooksPath .githooks）。
+#
+# 临时跳过：SKIP_WEBP_HOOK=1 git commit ...
+[ "${SKIP_WEBP_HOOK:-0}" = "1" ] && exit 0
+
+root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+script="$root/scripts/convert_images_to_webp.py"
+[ -f "$script" ] || exit 0
+
+if command -v python >/dev/null 2>&1; then
+  py=python
+elif command -v python3 >/dev/null 2>&1; then
+  py=python3
+else
+  echo "[webp] 未找到 Python，跳过图片转码（安装 Python + Pillow 后重试）" >&2
+  exit 0
+fi
+
+export PYTHONIOENCODING=utf-8
+exec "$py" "$script" --staged

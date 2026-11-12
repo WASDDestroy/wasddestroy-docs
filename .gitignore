@@ -5,3 +5,5 @@ node_modules
 .vitepress/cache/deps/_metadata.json
 .vitepress/.vitepress
 .zcodeignore
+__pycache__/
+*.py[cod]

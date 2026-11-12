@@ -7,6 +7,7 @@
     "vitepress": "^2.0.0-alpha.20"
   },
   "scripts": {
+    "prepare": "node scripts/install-git-hooks.mjs",
     "gen:sidebar": "node scripts/gen-sidebar.mjs",
     "gen:sidebar:check": "node scripts/gen-sidebar.mjs --check --strict",
     "docs:dev": "node scripts/gen-sidebar.mjs && vitepress dev",
@@ -14,7 +15,10 @@
     "docs:preview": "vitepress preview",
     "lint:md": "markdownlint-cli2",
     "lint:md:fix": "markdownlint-cli2 --fix",
-    "resize:md-images": "python scripts/resize-md-images.py"
+    "resize:md-images": "python scripts/resize-md-images.py",
+    "images:webp": "python scripts/convert_images_to_webp.py --all",
+    "images:webp:check": "python scripts/convert_images_to_webp.py --all --dry-run",
+    "hooks:install": "node scripts/install-git-hooks.mjs"
   },
   "dependencies": {
     "@nolebase/ui": "^2.18.2",

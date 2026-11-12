@@ -18,8 +18,19 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # 兜底：即使某些图片还没经过 pre-commit 转码，也在构建前转成 WebP。
+      # 子模块已 checkout，--all 会一并扫描 tb710fu-doc / data-structure。
+      - name: Convert images to WebP
+        run: |
+          python3 -m pip install --quiet --disable-pip-version-check pillow
+          python3 scripts/convert_images_to_webp.py --all
 
       - name: Build
         run: pnpm docs:build
