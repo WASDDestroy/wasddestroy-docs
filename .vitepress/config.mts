@@ -10,6 +10,16 @@ const rootSidebar = generatedSidebar as DefaultTheme.Sidebar
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lastUpdated: true,
+
+  // 文档里的截图大多在首屏以下，开启原生懒加载可避免一次性下载整页图片。
+  // VitePress 2 的开关是 markdown.image.lazyLoad（默认关闭），构建时会给
+  // Markdown 图片补上 loading="lazy"；外链图片和首页 hero 不受影响。
+  markdown: {
+    image: {
+      lazyLoad: true,
+    },
+  },
+
   // Nolebase 插件的客户端产物含 .vue 文件，SSR 构建时需要打包进来而不是 external
   vite: {
     ssr: {
