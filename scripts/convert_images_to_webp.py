@@ -7,7 +7,8 @@
     ``<img src="...">``；围栏代码块、行内代码、HTML 注释、YAML frontmatter
     里的内容不会被误改。
   * 支持 png / jpg / jpeg / bmp / tif / tiff。gif（可能动图）、svg、avif
-    以及已经是 webp 的文件一律跳过。
+    以及已经是 webp 的文件默认跳过；显式传 ``--max-width`` / ``--scale``
+    时，已存在的 webp 也会原地缩小尺寸。
   * 只有 WebP 比原图至少小 ``--min-saving``（默认 5%）才替换；否则保留原图。
   * 同一张图片被多篇文档引用时只转换一次，所有引用一起改写。
   * 原图被删除前，要求它的**全部**引用方都参与本次转换，避免留下悬空引用。
@@ -23,6 +24,8 @@
   python scripts/convert_images_to_webp.py --all             # 实际转换
   python scripts/convert_images_to_webp.py --staged          # hook 调用
   python scripts/convert_images_to_webp.py --all --quality 90
+  python scripts/convert_images_to_webp.py --all --max-width 1336  # 2× 渲染宽度
+  python scripts/convert_images_to_webp.py --all --scale 0.5
   python scripts/convert_images_to_webp.py --all path/to/dir
 
 依赖
@@ -101,6 +104,9 @@ class Conversion:
     after: int
     reused: bool = False
     data: bytes | None = None  # 待写入的 WebP 内容（reused 时为空）
+    in_place: bool = False     # 源文件本身就是 webp，只缩尺寸、不改名
+    from_dims: tuple[int, int] | None = None
+    to_dims: tuple[int, int] | None = None
 
 
 class SkipImage(Exception):
@@ -346,24 +352,49 @@ def submodule_roots(root: Path) -> set[Path]:
 # ---------------------------------------------------------------------------
 # 编码
 # ---------------------------------------------------------------------------
-def encode_webp(raw: bytes, quality: int) -> bytes:
+def resize_target(
+    width: int, height: int, max_width: int | None, scale: float | None
+) -> tuple[int, int]:
+    """按 --max-width / --scale 计算目标尺寸；只缩小、不放大。"""
+    limits = [width]
+    if max_width:
+        limits.append(max_width)
+    if scale:
+        limits.append(max(1, round(width * scale)))
+    target_w = min(limits)
+    if target_w >= width:
+        return width, height
+    return target_w, max(1, round(height * target_w / width))
+
+
+def encode_webp(
+    raw: bytes,
+    quality: int,
+    max_width: int | None = None,
+    scale: float | None = None,
+) -> tuple[bytes, tuple[int, int], tuple[int, int]]:
+    """返回 (WebP 字节, 原尺寸, 目标尺寸)。"""
     try:
         with Image.open(io.BytesIO(raw)) as im:
             if getattr(im, "n_frames", 1) > 1:
                 raise SkipImage("多帧图片")
             im = ImageOps.exif_transpose(im)
+            before_dims = im.size
+            target = resize_target(before_dims[0], before_dims[1], max_width, scale)
             has_alpha = (
                 im.mode in {"RGBA", "LA", "RGBa", "La"}
                 or (im.mode == "P" and "transparency" in im.info)
             )
             icc = im.info.get("icc_profile")
             converted = im.convert("RGBA" if has_alpha else "RGB")
+            if target != before_dims:
+                converted = converted.resize(target, Image.LANCZOS)
             buf = io.BytesIO()
             kwargs: dict[str, object] = {"quality": quality, "method": 6}
             if icc:
                 kwargs["icc_profile"] = icc
             converted.save(buf, "WEBP", **kwargs)
-            return buf.getvalue()
+            return buf.getvalue(), before_dims, target
     except SkipImage:
         raise
     except Exception as exc:  # noqa: BLE001 - 损坏图片等
@@ -383,6 +414,15 @@ def atomic_write(path: Path, data: bytes) -> None:
 # ---------------------------------------------------------------------------
 # --all：直接处理工作区
 # ---------------------------------------------------------------------------
+def wants_resize(args: argparse.Namespace) -> bool:
+    return bool(args.max_width or args.scale)
+
+
+def scan_exts(args: argparse.Namespace) -> set[str]:
+    # 只有显式要求缩放时才把已有的 webp 也纳入扫描（原地缩尺寸）。
+    return CONVERTIBLE_EXTS | {".webp"} if wants_resize(args) else CONVERTIBLE_EXTS
+
+
 def run_all(args: argparse.Namespace) -> int:
     root = Path.cwd()
     targets = [Path(p) for p in (args.paths or ["."])]
@@ -409,8 +449,9 @@ def run_all(args: argparse.Namespace) -> int:
         doc_boms[doc] = bom
         refs = parse_refs(text, doc, root)
         doc_refs[doc] = refs
+        allowed = scan_exts(args)
         for ref in refs:
-            if ref.image and ref.image.suffix.lower() in CONVERTIBLE_EXTS:
+            if ref.image and ref.image.suffix.lower() in allowed:
                 image_docs.setdefault(ref.image, set()).add(doc)
         protected |= frontmatter_images(text, doc, root)
 
@@ -441,7 +482,10 @@ def run_all(args: argparse.Namespace) -> int:
     if args.dry_run:
         updated_docs = 0
         for doc, refs in doc_refs.items():
-            if any(ref.image in mapping for ref in refs):
+            if any(
+                ref.image in mapping and url_to_webp(ref.url) != ref.url
+                for ref in refs
+            ):
                 updated_docs += 1
         report_all(args, conversions, updated_docs, skipped, dry_run=True)
         return 0
@@ -478,6 +522,8 @@ def run_all(args: argparse.Namespace) -> int:
             updated_docs += 1
 
     for conv in done:
+        if conv.in_place:
+            continue
         try:
             conv.src.unlink()
         except FileNotFoundError:
@@ -491,18 +537,42 @@ def run_all(args: argparse.Namespace) -> int:
 
 def plan_worktree_conversion(src: Path, dst: Path, args: argparse.Namespace) -> Conversion:
     before = src.stat().st_size
-    if dst.exists():
+
+    # 已经是 webp：只有显式要求缩放时才原地重编码。
+    if src.suffix.lower() == ".webp":
+        raw = src.read_bytes()
+        out, from_dims, to_dims = encode_webp(
+            raw, args.quality, args.max_width, args.scale
+        )
+        if from_dims == to_dims:
+            raise SkipImage("尺寸已符合缩放条件")
+        if len(out) >= before * (1 - args.min_saving):
+            raise SkipImage(
+                f"缩放收益不足（{human(before)} → {human(len(out))}）"
+            )
+        return Conversion(
+            src, src, before, len(out), data=out, in_place=True,
+            from_dims=from_dims, to_dims=to_dims,
+        )
+
+    if dst.exists() and not wants_resize(args):
         after = dst.stat().st_size
         if after < before * (1 - args.min_saving):
             return Conversion(src, dst, before, after, reused=True)
         raise SkipImage("同名 .webp 已存在但体积没有明显优势")
+
     raw = src.read_bytes()
-    out = encode_webp(raw, args.quality)
+    out, from_dims, to_dims = encode_webp(
+        raw, args.quality, args.max_width, args.scale
+    )
     if len(out) >= before * (1 - args.min_saving):
         raise SkipImage(
             f"WebP 收益不足（{human(before)} → {human(len(out))}）"
         )
-    return Conversion(src, dst, before, len(out), data=out)
+    return Conversion(
+        src, dst, before, len(out), data=out,
+        from_dims=from_dims, to_dims=to_dims,
+    )
 
 
 def report_all(
@@ -525,9 +595,19 @@ def report_all(
         )
     if updated_docs:
         print(f"[webp] {'将更新' if dry_run else '已更新'} {updated_docs} 篇文档的图片引用")
+    resized = [
+        c for c in conversions
+        if c.from_dims and c.to_dims and c.from_dims != c.to_dims
+    ]
+    if resized:
+        print(f"[webp] 其中 {len(resized)} 张缩小了尺寸")
     if args.verbose:
         for c in sorted(conversions, key=lambda x: x.before - x.after, reverse=True)[:15]:
-            print(f"       {human(c.before):>9} → {human(c.after):<9} {to_posix(c.src)}")
+            dims = (
+                f"  {c.from_dims[0]}×{c.from_dims[1]} → {c.to_dims[0]}×{c.to_dims[1]}"
+                if c.from_dims and c.to_dims and c.from_dims != c.to_dims else ""
+            )
+            print(f"       {human(c.before):>9} → {human(c.after):<9}{dims}  {to_posix(c.src)}")
     if skipped and (args.verbose or not conversions):
         for path, reason in skipped[:20]:
             print(f"[webp] 跳过 {to_posix(path)}：{reason}", file=sys.stderr)
@@ -590,6 +670,7 @@ def run_staged(args: argparse.Namespace) -> int:
     all_refs: dict[str, list[Ref]] = {}
     image_docs: dict[Path, set[str]] = {}
     protected: set[Path] = set()
+    allowed = scan_exts(args)
     for rel in sorted(p for p in tracked if Path(p).suffix.lower() in MD_EXTS):
         try:
             text, _ = decode_md(git_blob(rel))
@@ -600,7 +681,7 @@ def run_staged(args: argparse.Namespace) -> int:
         refs = parse_refs(text, doc, root)
         all_refs[rel] = refs
         for ref in refs:
-            if ref.image and ref.image.suffix.lower() in CONVERTIBLE_EXTS:
+            if ref.image and ref.image.suffix.lower() in allowed:
                 image_docs.setdefault(ref.image, set()).add(rel)
         protected |= frontmatter_images(text, doc, root)
 
@@ -618,7 +699,7 @@ def run_staged(args: argparse.Namespace) -> int:
         refs = parse_refs(text, doc, root)
         all_refs[rel] = refs
         for ref in refs:
-            if ref.image and ref.image.suffix.lower() in CONVERTIBLE_EXTS:
+            if ref.image and ref.image.suffix.lower() in allowed:
                 image_docs.setdefault(ref.image, set()).add(rel)
         protected |= frontmatter_images(text, doc, root)
 
@@ -626,7 +707,7 @@ def run_staged(args: argparse.Namespace) -> int:
     candidates: set[Path] = set()
     for doc_rel in staged_md:
         for ref in all_refs.get(doc_rel, []):
-            if ref.image and ref.image.suffix.lower() in CONVERTIBLE_EXTS:
+            if ref.image and ref.image.suffix.lower() in allowed:
                 candidates.add(ref.image)
 
     conversions: list[Conversion] = []
@@ -717,6 +798,8 @@ def run_staged(args: argparse.Namespace) -> int:
 
     # 文档引用都改好之后再删原图，避免中途失败留下悬空引用。
     for conv in conversions:
+        if conv.in_place:
+            continue
         src_rel = to_posix(conv.src)
         git(["update-index", "--force-remove", "--", src_rel])
         try:
@@ -735,6 +818,19 @@ def plan_staged_conversion(
     src_bytes = git_blob(src_rel)
     before = len(src_bytes)
 
+    if Path(src_rel).suffix.lower() == ".webp":
+        out, from_dims, to_dims = encode_webp(
+            src_bytes, args.quality, args.max_width, args.scale
+        )
+        if from_dims == to_dims:
+            raise SkipImage("尺寸已符合缩放条件")
+        if len(out) >= before * (1 - args.min_saving):
+            raise SkipImage(f"缩放收益不足（{human(before)} → {human(len(out))}）")
+        return Conversion(
+            Path(src_rel), Path(src_rel), before, len(out), in_place=True,
+            from_dims=from_dims, to_dims=to_dims,
+        ), out
+
     if dst_rel in tracked:
         dst_bytes = git_blob(dst_rel)
         if len(dst_bytes) < before * (1 - args.min_saving):
@@ -746,10 +842,15 @@ def plan_staged_conversion(
         if len(dst_bytes) < before * (1 - args.min_saving):
             return Conversion(Path(src_rel), Path(dst_rel), before, len(dst_bytes), reused=True), dst_bytes
 
-    out = encode_webp(src_bytes, args.quality)
+    out, from_dims, to_dims = encode_webp(
+        src_bytes, args.quality, args.max_width, args.scale
+    )
     if len(out) >= before * (1 - args.min_saving):
         raise SkipImage(f"WebP 收益不足（{human(before)} → {human(len(out))}）")
-    return Conversion(Path(src_rel), Path(dst_rel), before, len(out)), out
+    return Conversion(
+        Path(src_rel), Path(dst_rel), before, len(out),
+        from_dims=from_dims, to_dims=to_dims,
+    ), out
 
 
 def report_staged(
@@ -773,13 +874,26 @@ def report_staged(
         updated_docs = sum(
             1
             for doc in staged_md
-            if any(ref.image in mapping for ref in all_refs.get(doc, []))
+            if any(
+                ref.image in mapping and url_to_webp(ref.url) != ref.url
+                for ref in all_refs.get(doc, [])
+            )
         )
     if updated_docs:
         print(f"[webp] {'将更新' if dry_run else '已更新'} {updated_docs} 篇文档的图片引用")
+    resized = [
+        c for c in conversions
+        if c.from_dims and c.to_dims and c.from_dims != c.to_dims
+    ]
+    if resized:
+        print(f"[webp] 其中 {len(resized)} 张缩小了尺寸")
     if args.verbose:
         for c in sorted(conversions, key=lambda x: x.before - x.after, reverse=True):
-            print(f"       {human(c.before):>9} → {human(c.after):<9} {to_posix(c.src)}")
+            dims = (
+                f"  {c.from_dims[0]}×{c.from_dims[1]} → {c.to_dims[0]}×{c.to_dims[1]}"
+                if c.from_dims and c.to_dims and c.from_dims != c.to_dims else ""
+            )
+            print(f"       {human(c.before):>9} → {human(c.after):<9}{dims}  {to_posix(c.src)}")
     for path, reason in skipped:
         print(f"[webp] 跳过 {to_posix(path)}：{reason}", file=sys.stderr)
 
@@ -799,6 +913,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("paths", nargs="*", help="--all 的扫描目录，默认整个仓库")
     parser.add_argument("--quality", type=int, default=88, help="WebP 质量 1-100，默认 88")
     parser.add_argument(
+        "--max-width", type=int, default=None,
+        help="把图片宽度限制到该像素值（只缩小不放大）；对已是 webp 的图片原地重编码",
+    )
+    parser.add_argument(
+        "--scale", type=float, default=None,
+        help="按比例缩小（0 < scale < 1），例如 0.5 表示宽高各减半",
+    )
+    parser.add_argument(
         "--min-saving", type=float, default=0.05,
         help="至少节省这个比例才替换，默认 0.05",
     )
@@ -810,6 +932,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--quality 必须在 1-100 之间")
     if not 0 <= args.min_saving < 1:
         parser.error("--min-saving 必须在 [0, 1) 之间")
+    if args.max_width is not None and args.max_width < 1:
+        parser.error("--max-width 必须是正整数")
+    if args.scale is not None and not 0 < args.scale < 1:
+        parser.error("--scale 必须在 (0, 1) 之间（只缩小，不放大）")
 
     try:
         if args.staged:
