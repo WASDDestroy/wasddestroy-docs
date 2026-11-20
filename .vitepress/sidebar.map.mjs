@@ -51,7 +51,12 @@ export default {
     lenovo: {
       label: '联想通用教程',
       collapsed: false,
-      order: ['lenovo_quick_fix_tips', 'research_on_sn_img', 'unlock_application_page'],
+      order: [
+        'lenovo_quick_fix_tips',
+        'research_on_sn_img',
+        'unlock_application_page',
+        'mtk_tb335fc',
+        'mtk_notes'],
     },
 
     // 子目录按目录名排序：basics / linear_list / stack_and_queue /
@@ -140,7 +145,10 @@ export default {
   },
 
   dirs: {
-    'lenovo/mtk_tb335fc': '从 TB335FC 看联想-联发科',
+    'lenovo/mtk_tb335fc': {
+      label: '从 TB335FC 看联想-联发科',
+      order: ['tb335fc_shortened_analysis', 'tb335fc_analysis']
+    },
     'data-structure/basics': '基本知识',
     'data-structure/linear_list': {
       label: '线性表',

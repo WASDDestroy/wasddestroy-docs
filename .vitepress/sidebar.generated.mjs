@@ -94,14 +94,18 @@ export default {
           "collapsed": false,
           "items": [
             {
-              "text": "TB335FC 救砖包分析",
-              "link": "/lenovo/mtk_tb335fc/tb335fc_analysis"
-            },
-            {
               "text": "TB335FC 救砖包分析（简）",
               "link": "/lenovo/mtk_tb335fc/tb335fc_shortened_analysis"
+            },
+            {
+              "text": "TB335FC 救砖包分析",
+              "link": "/lenovo/mtk_tb335fc/tb335fc_analysis"
             }
           ]
+        },
+        {
+          "text": "联发科小注",
+          "link": "/lenovo/mtk_notes"
         }
       ]
     }
