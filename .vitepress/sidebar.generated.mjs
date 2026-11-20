@@ -88,6 +88,20 @@ export default {
         {
           "text": "解锁申请网站前端 JavaScript 分析",
           "link": "/lenovo/unlock_application_page"
+        },
+        {
+          "text": "从 TB335FC 看联想-联发科",
+          "collapsed": false,
+          "items": [
+            {
+              "text": "TB335FC 救砖包分析",
+              "link": "/lenovo/mtk_tb335fc/tb335fc_analysis"
+            },
+            {
+              "text": "TB335FC 救砖包分析（简）",
+              "link": "/lenovo/mtk_tb335fc/tb335fc_shortened_analysis"
+            }
+          ]
         }
       ]
     }

@@ -140,6 +140,7 @@ export default {
   },
 
   dirs: {
+    'lenovo/mtk_tb335fc': '从 TB335FC 看联想-联发科',
     'data-structure/basics': '基本知识',
     'data-structure/linear_list': {
       label: '线性表',
@@ -175,6 +176,8 @@ export default {
     'lenovo/lenovo_quick_fix_tips': '官方刷机工具小妙招',
     'lenovo/research_on_sn_img': '解锁流程逆向',
     'lenovo/unlock_application_page': '解锁申请网站前端 JavaScript 分析',
+    'lenovo/mtk_tb335fc/tb335fc_shortened_analysis': 'TB335FC 救砖包分析（简）',
+    'lenovo/mtk_tb335fc/tb335fc_analysis': 'TB335FC 救砖包分析',
 
     'tb710fu-doc/generic/before_we_start': '序言',
     'tb710fu-doc/generic/specs': '设备参数',
